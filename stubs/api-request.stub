@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace JustSteveKing\Transporter\Tests\Stubs;
+namespace DummyNamespace;
 
 use JustSteveKing\Transporter\Concerns\HandlesUri;
 use JustSteveKing\Transporter\Concerns\HasHeaders;
 use JustSteveKing\Transporter\Concerns\HasPayload;
 use JustSteveKing\Transporter\Concerns\ForwardsRequests;
-use JustSteveKing\Transporter\Concerns\HandlesAuthentication;
 use JustSteveKing\Transporter\Contracts\RequestContract;
 use JustSteveKing\Transporter\Concerns\HandlesClientSetup;
+use JustSteveKing\Transporter\Concerns\HandlesAuthentication;
 
-class FailingRequest implements RequestContract
+class DummyClass implements RequestContract
 {
     use HandlesUri;
     use HasPayload;
@@ -20,10 +20,10 @@ class FailingRequest implements RequestContract
     use ForwardsRequests;
     use HandlesClientSetup;
     use HandlesAuthentication;
-    
-    public string $path = 'postsss';
 
-    public string $baseUri = 'https://jsonplaceholder.typicode.com';
+    public string $path = 'your-resource-path';
+
+    public string $baseUri = 'your-base-url';
 
     public function method(): string
     {

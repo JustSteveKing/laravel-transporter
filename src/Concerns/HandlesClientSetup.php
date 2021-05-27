@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace JustSteveKing\Transporter\Concerns;
 
-use Carbon\CarbonInterval;
-
 trait HandlesClientSetup
 {
     public function retry(): int
@@ -15,15 +13,11 @@ trait HandlesClientSetup
 
     public function retryTiming(): float
     {
-        return CarbonInterval::milliseconds(
-            milliseconds: 300,
-        )->totalMicroseconds;
+        return 300;
     }
 
     public function timeout(): float
     {
-        return CarbonInterval::seconds(
-            seconds: 10,
-        )->totalSeconds;
+        return 10;
     }
 }

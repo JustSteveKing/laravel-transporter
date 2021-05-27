@@ -6,6 +6,7 @@ namespace JustSteveKing\Transporter;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use JustSteveKing\Transporter\Commands\TransporterCommand;
 
 class TransporterServiceProvider extends PackageServiceProvider
 {
@@ -13,6 +14,8 @@ class TransporterServiceProvider extends PackageServiceProvider
     {
         $package->name(
             name: 'transporter',
+        )->hasCommand(
+            commandClassName: TransporterCommand::class,
         );
     }
 }

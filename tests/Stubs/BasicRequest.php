@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace JustSteveKing\Transporter\Tests\Stubs;
 
-use JustSteveKing\Transporter\Concerns\ForwardsRequests;
-use JustSteveKing\Transporter\Concerns\HandlesClientSetup;
 use JustSteveKing\Transporter\Concerns\HandlesUri;
 use JustSteveKing\Transporter\Concerns\HasHeaders;
 use JustSteveKing\Transporter\Concerns\HasPayload;
+use JustSteveKing\Transporter\Concerns\ForwardsRequests;
 use JustSteveKing\Transporter\Contracts\RequestContract;
+use JustSteveKing\Transporter\Concerns\HandlesClientSetup;
 
 class BasicRequest implements RequestContract
 {
@@ -28,12 +28,12 @@ class BasicRequest implements RequestContract
         return true;
     }
 
-    public function authStrategy(): string | null
+    public function authStrategy(): string|null
     {
         return 'basic';
     }
 
-    public function authCredentials(): string | array | null
+    public function authCredentials(): array|null
     {
         return [
             'test', // username

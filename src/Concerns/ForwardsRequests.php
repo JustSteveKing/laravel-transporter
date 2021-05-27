@@ -9,7 +9,7 @@ use JustSteveKing\Transporter\Transporter;
 
 trait ForwardsRequests
 {
-    public static function __callStatic($name, ...$args): Response
+    public static function __callStatic($name, $args): Response
     {
         return Transporter::request(
             request: new static(),

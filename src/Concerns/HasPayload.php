@@ -8,10 +8,6 @@ trait HasPayload
 {
     public function payload(array $payload = []): array
     {
-        $body = array_merge($payload, []);
-
-        return [
-            'body' => $body
-        ];
+        return array_merge($payload, []);
     }
 }

@@ -16,9 +16,9 @@ interface RequestContract
 
     public function requiresAuth(): bool;
 
-    public function authStrategy(): string | null;
+    public function authStrategy(): string|null;
 
-    public function authCredentials(): string | array | null;
+    public function authCredentials(): array|null;
 
     public function method(): string;
 

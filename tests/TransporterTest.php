@@ -16,6 +16,7 @@ use JustSteveKing\Transporter\Tests\Stubs\BasicRequest;
 use JustSteveKing\Transporter\Tests\Stubs\TokenRequest;
 use JustSteveKing\Transporter\Tests\Stubs\DigestRequest;
 use JustSteveKing\Transporter\Tests\Stubs\FailingRequest;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 class TransporterTest extends TestCase
 {
@@ -256,7 +257,7 @@ class TransporterTest extends TestCase
         );
 
         $this->expectExceptionCode(
-            404
+            HttpFoundationResponse::HTTP_NOT_FOUND,
         );
 
         $this->expectExceptionMessage(
@@ -297,14 +298,6 @@ class TransporterTest extends TestCase
         $transporter = Transporter::request(
             request: new TokenRequest,
         );
-        
-        $transporter->fake([
-            'https://jsonplaceholder.typicode.com/*' => Http::response(
-                body: [
-                    'foo' => 'bar',
-                ]
-            ),
-        ]);
 
         $options = $transporter->buildRequest()->mergeOptions();
 
@@ -388,12 +381,21 @@ class TransporterTest extends TestCase
     public function it_can_create_a_new_api_request_using_the_command()
     {
         $this->assertTrue(
-            file_exists(__DIR__ . '/../../stubs/api-request.stub')
+            file_exists(
+                __DIR__ . '/../stubs/api-request.stub'
+            )
         );
-        $this->artisan('make:api-request TestRequest')->assertExitCode(0);
+
+        $this->artisan(
+            command: 'make:api-request TestRequest',
+        )->assertExitCode(
+            exitCode: 0,
+        );
 
         $this->assertTrue(
-            file_exists(__DIR__ . '/../../vendor/orchestra/testbench-core/laravel/app/Http/API/Requests/TestRequest.php')
+            file_exists(
+                __DIR__ . '/../vendor/orchestra/testbench-core/laravel/app/Http/API/Requests/TestRequest.php'
+            )
         );
     }
 

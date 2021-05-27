@@ -57,6 +57,7 @@ class TestRequest implements RequestContract
     use HasHeaders;
     use ForwardsRequests;
     use HandlesClientSetup;
+    use HandlesAuthentication;
 
     public string $path = 'your-resource-path';
 

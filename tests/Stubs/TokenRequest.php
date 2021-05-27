@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace JustSteveKing\Transporter\Tests\Stubs;
 
-use JustSteveKing\Transporter\Concerns\ForwardsRequests;
-use JustSteveKing\Transporter\Concerns\HandlesClientSetup;
 use JustSteveKing\Transporter\Concerns\HandlesUri;
 use JustSteveKing\Transporter\Concerns\HasHeaders;
 use JustSteveKing\Transporter\Concerns\HasPayload;
+use JustSteveKing\Transporter\Concerns\ForwardsRequests;
 use JustSteveKing\Transporter\Contracts\RequestContract;
+use JustSteveKing\Transporter\Concerns\HandlesClientSetup;
 
 class TokenRequest implements RequestContract
 {
@@ -28,14 +28,17 @@ class TokenRequest implements RequestContract
         return true;
     }
 
-    public function authStrategy(): string | null
+    public function authStrategy(): string|null
     {
         return 'token';
     }
 
-    public function authCredentials(): string | array | null
+    public function authCredentials(): array|null
     {
-        return 'abcdefg';
+        return [
+            'abcdefg', // API token.
+            'Bearer' // Type of token. -> Authorization Bearer abcdefg
+        ];
     }
 
     public function method(): string
