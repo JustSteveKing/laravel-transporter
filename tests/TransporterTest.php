@@ -414,7 +414,7 @@ class TransporterTest extends TestCase
 
         $response = BasicRequest::with(
             payload: []
-        );
+        )->send();
 
         $this->assertEquals(
             200,
