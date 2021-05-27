@@ -15,6 +15,17 @@ You can install the package via composer:
 composer require juststeveking/laravel-transporter
 ```
 
+## Generating Request
+
+To generate an API request to use with Transporter, you can use the Artisan make command:
+
+```bash
+php artisan make:api-request NameOfYourRequest
+```
+
+This will by default publish to: `app/Http/API/Request/...`
+
+
 ## Usage
 
 ```php
