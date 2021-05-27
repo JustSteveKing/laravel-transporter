@@ -11,6 +11,12 @@
     "authors": [
         {
             "role": "Developer",
+            "name": "Zuzana Kunckova",
+            "email": "contact@zuzana-k.com",
+            "homepage": "https://www.zuzana-k.com/"
+        },
+        {
+            "role": "Developer",
             "name": "Steve McDougall",
             "email": "juststevemcd@gmail.com",
             "homepage": "https://www.juststeveking.uk/"

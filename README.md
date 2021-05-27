@@ -253,6 +253,7 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
+- [Zuzana Kunckova](https://github.com/zuzana-kunckova)
 - [Steve McDougall](https://github.com/JustSteveKing)
 - [All Contributors](../../contributors)
 

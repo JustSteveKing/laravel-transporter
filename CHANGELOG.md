@@ -1,7 +1,7 @@
 # Changelog
 
-All notable changes to `:package_name` will be documented in this file.
+All notable changes to `Transporter` will be documented in this file.
 
-## 1.0.0 - 202X-XX-XX
+## 0.1.0 - 2021-05-27
 
-- initial release
+Initial Release of the package.
