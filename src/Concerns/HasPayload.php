@@ -8,7 +8,7 @@ trait HasPayload
 {
     public function payload(array $payload = []): array
     {
-        return array_merge($payload, $this->payload);
+        $this->payload = array_merge($payload, $this->payload);
 
         return $this->payload;
     }
