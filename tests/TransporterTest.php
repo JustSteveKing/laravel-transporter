@@ -394,7 +394,7 @@ class TransporterTest extends TestCase
 
         $this->assertTrue(
             file_exists(
-                __DIR__ . '/../vendor/orchestra/testbench-core/laravel/app/Http/API/Requests/TestRequest.php'
+                __DIR__ . '/../vendor/orchestra/testbench-core/laravel/app/Transporter/Requests/TestRequest.php'
             )
         );
     }

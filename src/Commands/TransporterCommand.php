@@ -21,6 +21,6 @@ class TransporterCommand extends GeneratorCommand
 
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace . '\Http\API\Requests';
+        return $rootNamespace . '\Transporter\Requests';
     }
 }
