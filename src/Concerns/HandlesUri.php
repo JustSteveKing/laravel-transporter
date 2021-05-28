@@ -41,12 +41,16 @@ trait HandlesUri
 
     public function path(string|null $path = null): null|string
     {
+        $this->path = $path ?? $this->path;
+
         return $path ?? $this->path;
     }
 
     public function parameters(array $parameters = []): array
     {
-        return array_merge($parameters, []);
+        $this->parameters = array_merge($parameters, $this->parameters);
+
+        return $this->parameters;
     }
 
     public function fragment(): null|string

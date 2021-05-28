@@ -23,6 +23,14 @@ class DummyClass implements RequestContract
 
     public string $path = 'your-resource-path';
 
+    public array $payload = [];
+
+    public array $parameters = [];
+
+    public array $headers = [
+        'Accept' => 'application/json'
+    ];
+
     public string $baseUri = 'your-base-url';
 
     public function method(): string

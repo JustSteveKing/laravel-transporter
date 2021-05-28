@@ -8,8 +8,8 @@ trait HasHeaders
 {
     public function headers(array $headers = []): array
     {
-        return array_merge($headers, [
-            'Accept' => 'application/json',
-        ]);
+        $this->headers = array_merge($headers, $this->headers);
+
+        return $this->headers;
     }
 }

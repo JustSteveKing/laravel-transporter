@@ -23,6 +23,14 @@ class TestRequest implements RequestContract
     
     public string $path = 'posts';
 
+    public array $payload = [];
+
+    public array $parameters = [];
+
+    public array $headers = [
+        'Accept' => 'application/json'
+    ];
+
     public string $baseUri = 'https://jsonplaceholder.typicode.com';
 
     public function method(): string

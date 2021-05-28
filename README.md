@@ -73,6 +73,8 @@ class TestRequest implements RequestContract
 
     public string $baseUri = 'your-base-url';
 
+    public array $payload = [];
+
     public function method(): string
     {
         return 'GET';
