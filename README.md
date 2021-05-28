@@ -52,7 +52,7 @@ TestRequest::build()
 
 When building your request to send, you can override the following:
 
-- Request Data using `withData(aray $data)`
+- Request Data using `withData(array $data)`
 - Request Query Params using `withQuery(array $query)`
 - Request Path using `setPath(string $path)`
 
