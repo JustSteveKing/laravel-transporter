@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JustSteveKing\Transporter\Tests;
 
+use Illuminate\Http\Client\Pool;
 use Illuminate\Support\Facades\Http;
 use JustSteveKing\Transporter\Tests\Stubs\TestRequest;
 use JustSteveKing\Transporter\Transporter;
@@ -23,7 +24,9 @@ class TransporterTest extends TestCase
      */
     public function it_builds_a_transporter()
     {
-        $pool = Transporter::request(TestRequest::for('1'))->dispatch();
+        $pool = Transporter::build(fn() => [
+            TestRequest::for()->send(),
+        ]);
 
         dd($pool);
     }

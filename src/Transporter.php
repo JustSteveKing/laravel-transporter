@@ -4,32 +4,14 @@ declare(strict_types=1);
 
 namespace JustSteveKing\Transporter;
 
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\Factory;
 
-class Transporter
+class Transporter extends Factory
 {
-    public function __construct(
-        public Collection $requests,
-    ) {}
-
-    public static function request(
-        ...$request,
-    ): self {
-        return new self(
-            requests: collect($request),
+    public static function build(callable $callback): array
+    {
+        return (new self)->pool(
+            callback: $callback,
         );
-    }
-
-    public function attach(Request $request): self
-    {
-        $this->requests->add($request);
-
-        return $this;
-    }
-
-    public function dispatch(): array
-    {
-        return Http::pool(fn () => $this->requests->map(fn ($request) => $request->send()));
     }
 }
