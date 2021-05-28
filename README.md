@@ -6,6 +6,12 @@
 
 Transporter is a futuristic way to send API requests in PHP. This is an OOP approach to handle API requests.
 
+<p align="center">
+
+![](banner.png)
+
+</p>
+
 
 ## Installation
 
