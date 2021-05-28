@@ -9,11 +9,16 @@ use BadMethodCallException;
 use Illuminate\Support\Str;
 use Illuminate\Support\Stringable;
 use Illuminate\Http\Client\Response;
+use Illuminate\Support\Traits\Macroable;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Factory as HttpFactory;
 
 abstract class Request
 {
+    use Macroable {
+        __call as macroCall;
+    }
+    
     protected PendingRequest $request;
 
     protected string $method;

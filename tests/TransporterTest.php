@@ -22,18 +22,6 @@ class TransporterTest extends TestCase
     /**
      * @test
      */
-    public function it_builds_a_transporter()
-    {
-        $pool = Transporter::build(fn() => [
-            TestRequest::for()->send(),
-        ]);
-
-        dd($pool);
-    }
-
-    /**
-     * @test
-     */
     public function it_can_create_a_new_api_request_using_the_command()
     {
         $this->assertTrue(
