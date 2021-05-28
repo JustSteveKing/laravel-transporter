@@ -90,6 +90,18 @@ abstract class Request
         return $this->path;
     }
 
+    public function getRequest(): PendingRequest
+    {
+        return $this->request;
+    }
+
+    public function setPath(string $path): self
+    {
+        $this->path = $path;
+
+        return $this;
+    }
+
     public function __call(string $name, array $arguments): self
     {
         if (method_exists($this->request, $name)) {
