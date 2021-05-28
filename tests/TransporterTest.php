@@ -135,11 +135,11 @@ class TransporterTest extends TestCase
         $this->assertNotEmpty(
             $this->transporter->request->headers(),
         );
-    
+
         $this->assertTrue(
             array_key_exists('Accept', $this->transporter->request->headers()),
         );
-    
+
         $this->assertEquals(
             [
                 'Accept' => 'application/json',
@@ -156,7 +156,7 @@ class TransporterTest extends TestCase
         $this->assertTrue(
             is_array($this->transporter->request->payload()),
         );
-    
+
         $this->assertTrue(
             empty($this->transporter->request->payload()),
         );
@@ -171,22 +171,22 @@ class TransporterTest extends TestCase
             Uri::class,
             $this->transporter->request->uri(),
         );
-    
+
         $this->assertEquals(
             'https',
             $this->transporter->request->uri()->scheme(),
         );
-    
+
         $this->assertEquals(
             'jsonplaceholder.typicode.com',
             $this->transporter->request->uri()->host(),
         );
-    
+
         $this->assertEquals(
             '/posts',
             $this->transporter->request->uri()->path(),
         );
-    
+
         $this->assertEquals(
             'posts',
             $this->transporter->request->path(),
@@ -201,7 +201,7 @@ class TransporterTest extends TestCase
         $this->assertTrue(
             is_array($this->transporter->request->parameters()),
         );
-    
+
         $this->assertTrue(
             empty($this->transporter->request->parameters()),
         );
@@ -263,7 +263,7 @@ class TransporterTest extends TestCase
         $this->expectExceptionMessage(
             "HTTP request returned status code 404"
         );
-        
+
         Transporter::request(
             request: new FailingRequest,
         )->send();
@@ -324,7 +324,7 @@ class TransporterTest extends TestCase
         $transporter = Transporter::request(
             request: new DigestRequest,
         );
-        
+
         $transporter->fake([
             'https://jsonplaceholder.typicode.com/*' => Http::response(
                 body: [
@@ -351,7 +351,7 @@ class TransporterTest extends TestCase
         $transporter = Transporter::request(
             request: new BasicRequest,
         );
-        
+
         $transporter->fake([
             'https://jsonplaceholder.typicode.com/*' => Http::response(
                 body: [
@@ -415,6 +415,29 @@ class TransporterTest extends TestCase
         $response = BasicRequest::with(
             payload: []
         )->send();
+
+        $this->assertEquals(
+            200,
+            $response->status()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_forward_calls_directly_from_the_request_with_php7_syntax()
+    {
+        Http::fake([
+            'https://jsonplaceholder.typicode.com/*' => Http::response(
+                body: [
+                    'foo' => 'bar',
+                ]
+            ),
+        ]);
+
+        $response = BasicRequest::to('/foo/bar')
+            ->with([], ['X-Foo' => 'Bar'])
+            ->send();
 
         $this->assertEquals(
             200,
