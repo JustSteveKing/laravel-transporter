@@ -46,7 +46,6 @@ class Transporter
     public function with(
         array $payload = [],
         array $headers = [],
-        null|string $path = null,
     ): self {
         if (! empty($payload)) {
             $this->request->payload(
@@ -60,12 +59,19 @@ class Transporter
             );
         }
 
+        return $this;
+    }
+
+    public function to(
+        ?string $path = null,
+    ): self
+    {
         if (! is_null($path)) {
             $this->request->path(
                 path: $path,
             );
         }
-        
+
         return $this;
     }
 

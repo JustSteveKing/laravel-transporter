@@ -8,7 +8,7 @@ use JustSteveKing\Transporter\Transporter;
 
 trait ForwardsRequests
 {
-    public static function __callStatic($name, $args): Transporter
+    public static function __callStatic(string $name, array $args): Transporter
     {
         return Transporter::request(
             request: new static(),
