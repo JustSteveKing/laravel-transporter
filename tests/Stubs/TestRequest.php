@@ -4,37 +4,21 @@ declare(strict_types=1);
 
 namespace JustSteveKing\Transporter\Tests\Stubs;
 
-use JustSteveKing\Transporter\Concerns\HandlesUri;
-use JustSteveKing\Transporter\Concerns\HasHeaders;
-use JustSteveKing\Transporter\Concerns\HasPayload;
-use JustSteveKing\Transporter\Concerns\ForwardsRequests;
-use JustSteveKing\Transporter\Contracts\RequestContract;
-use JustSteveKing\Transporter\Concerns\HandlesClientSetup;
-use JustSteveKing\Transporter\Concerns\HandlesAuthentication;
+use Illuminate\Http\Client\PendingRequest;
+use JustSteveKing\Transporter\Request;
 
-class TestRequest implements RequestContract
+class TestRequest extends Request
 {
-    use HandlesUri;
-    use HasPayload;
-    use HasHeaders;
-    use ForwardsRequests;
-    use HandlesClientSetup;
-    use HandlesAuthentication;
-    
-    public string $path = 'posts';
+    protected string $method = 'GET';
+    protected string $baseUrl = 'https://jsonplaceholder.typicode.com';
+    protected string $path = '/todos';
 
-    public array $payload = [];
-
-    public array $parameters = [];
-
-    public array $headers = [
-        'Accept' => 'application/json'
+    protected array $data = [
+        'completed' => false,
     ];
 
-    public string $baseUri = 'https://jsonplaceholder.typicode.com';
-
-    public function method(): string
+    protected function withRequest(PendingRequest $request): void
     {
-        return 'GET';
+        $request->withToken('foobar');
     }
 }
