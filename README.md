@@ -37,7 +37,7 @@ This will by default publish to: `app/Transporter/Request/...`
 ## Usage
 
 ```php
-TestRequest::for()
+TestRequest::build()
     ->withToken('foobar')
     ->withData([
         'title' => 'Build a package'

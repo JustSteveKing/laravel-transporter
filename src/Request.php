@@ -28,7 +28,7 @@ abstract class Request
     protected array $query = [];
     protected array $data = [];
 
-    public static function for(...$args): self
+    public static function build(...$args): self
     {
         return app(static::class, $args);
     }
