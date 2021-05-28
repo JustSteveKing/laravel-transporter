@@ -23,9 +23,9 @@ class TransporterTest extends TestCase
      */
     public function it_builds_a_transporter()
     {
-        $pool = Transporter::request(TestRequest::for('1'));
+        $pool = Transporter::request(TestRequest::for('1'))->dispatch();
 
-        dd(Http::pool(fn() => $pool->requests->toArray()));
+        dd($pool);
     }
 
     /**

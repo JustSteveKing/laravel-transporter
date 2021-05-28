@@ -30,6 +30,6 @@ class Transporter
 
     public function dispatch(): array
     {
-        return Http::pool(fn () => $this->requests->toArray());
+        return Http::pool(fn () => $this->requests->map(fn ($request) => $request->send()));
     }
 }
