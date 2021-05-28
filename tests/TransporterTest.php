@@ -4,16 +4,10 @@ declare(strict_types=1);
 
 namespace JustSteveKing\Transporter\Tests;
 
-use Illuminate\Http\Client\Pool;
-use Illuminate\Support\Facades\Http;
-use JustSteveKing\Transporter\Tests\Stubs\TestRequest;
-use JustSteveKing\Transporter\Transporter;
 use JustSteveKing\Transporter\Tests\TestCase;
 
 class TransporterTest extends TestCase
 {
-    protected Transporter $transporter;
-
     public function setUp(): void
     {
         parent::setUp();
