@@ -31,10 +31,14 @@ To generate an API request to use with Transporter, you can use the Artisan make
 php artisan make:api-request NameOfYourRequest
 ```
 
-This will by default publish to: `app/Transporter/Request/...`
+This will by default publish as: `app/Transporter/Requests/NameOfYourRequest.php`
 
 
 ## Usage
+
+Transporter Requests are an extention of Laravels `PendingRequest` so all of the methods available on a Pending Request is available to you on your requests.
+
+Also when you send the request, you will receive a `Illuminate\Http\Client\Response` back, allowing you to do things such as `collect($key)` and `json()` and `failed()` very easily. We are simply just shifting how we send it into a class based approach.
 
 ```php
 TestRequest::build()
@@ -45,6 +49,13 @@ TestRequest::build()
     ->send()
     ->json();
 ```
+
+When building your request to send, you can override the following:
+
+- Request Data using `withData(aray $data)`
+- Request Query Params using `withQuery(array $query)`
+- Request Path using `setPath(string $path)`
+
 
 ## Testing
 
