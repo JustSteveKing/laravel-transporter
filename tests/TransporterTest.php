@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace JustSteveKing\Transporter\Tests;
 
 use Illuminate\Http\Client\PendingRequest;
+use JustSteveKing\Transporter\Tests\Stubs\PostRequest;
 use JustSteveKing\Transporter\Tests\Stubs\TestRequest;
 use JustSteveKing\Transporter\Tests\TestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class TransporterTest extends TestCase
 {
@@ -38,15 +40,6 @@ class TransporterTest extends TestCase
         $this->assertFalse(
             condition: empty($response->json())
         );
-
-        $this->assertJson(
-            actualJson: json_encode([
-                'userId' => 1,
-                'id' => 1,
-                'title' => 'delectus aut autem',
-                'completed' => false
-            ]),
-        );
     }
 
     /**
@@ -77,7 +70,28 @@ class TransporterTest extends TestCase
                 actual: $item['postId'],
             );
         }
-    } 
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_add_data_to_the_request()
+    {
+        $data = [
+            'title' => 'transporter test',
+            'body' => 'transporter test',
+            'userId' => 1,
+        ];
+        
+        $response = PostRequest::build()->withData(
+            data: $data
+        )->send();
+
+        $this->assertEquals(
+            expected: Response::HTTP_OK,
+            actual: $response->status()
+        );
+    }
 
     /**
      * @test
