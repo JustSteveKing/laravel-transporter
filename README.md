@@ -23,7 +23,7 @@ To generate an API request to use with Transporter, you can use the Artisan make
 php artisan make:api-request NameOfYourRequest
 ```
 
-This will by default publish to: `app/Http/API/Request/...`
+This will by default publish to: `app/Transporter/Request/...`
 
 
 ## Usage
