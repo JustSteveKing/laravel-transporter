@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace JDummyNamespace;
+namespace DummyNamespace;
 
 use Illuminate\Http\Client\PendingRequest;
 use JustSteveKing\Transporter\Request;
