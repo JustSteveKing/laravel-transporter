@@ -28,7 +28,7 @@ abstract class Request
     protected array $query = [];
     protected array $data = [];
 
-    public static function build(...$args): self
+    public static function build(...$args): static
     {
         return app(static::class, $args);
     }
@@ -40,14 +40,14 @@ abstract class Request
         $this->withRequest($this->request);
     }
 
-    public function withData(array $data): self
+    public function withData(array $data): static
     {
         $this->data = array_merge($this->data, $data);
 
         return $this;
     }
 
-    public function withQuery(array $query): self
+    public function withQuery(array $query): static
     {
         $this->query = array_merge($this->query, $query);
 
@@ -59,7 +59,7 @@ abstract class Request
         $url = (string) Str::of($this->path())
             ->when(
                 !empty($this->query),
-                fn(Stringable $path): Stringable => $path->append('?', http_build_query($this->query))
+                fn (Stringable $path): Stringable => $path->append('?', http_build_query($this->query))
             );
 
         switch (mb_strtoupper($this->method)) {
@@ -95,14 +95,14 @@ abstract class Request
         return $this->request;
     }
 
-    public function setPath(string $path): self
+    public function setPath(string $path): static
     {
         $this->path = $path;
 
         return $this;
     }
 
-    public function __call(string $name, array $arguments): self
+    public function __call(string $name, array $arguments): static
     {
         if (method_exists($this->request, $name)) {
             call_user_func_array([$this->request, $name], $arguments);
