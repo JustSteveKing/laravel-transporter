@@ -62,22 +62,15 @@ abstract class Request
                 fn (Stringable $path): Stringable => $path->append('?', http_build_query($this->query))
             );
 
-        switch (mb_strtoupper($this->method)) {
-            case 'GET':
-                return $this->request->get($this->path(), $this->query);
-            case 'POST':
-                return $this->request->post($url, $this->data);
-            case 'PUT':
-                return $this->request->put($url, $this->data);
-            case 'PATCH':
-                return $this->request->patch($url, $this->data);
-            case 'DELETE':
-                return $this->request->delete($url, $this->data);
-            case 'HEAD':
-                return $this->request->head($this->path(), $this->query);
-            default:
-                throw new OutOfBoundsException();
-        }
+        return match (mb_strtoupper($this->method)) {
+            "GET" => $this->request->get($this->path(), $this->query),
+            "POST" => $this->request->post($url, $this->data),
+            "PUT" => $this->request->put($url, $this->data),
+            "PATCH" => $this->request->patch($url, $this->data),
+            "DELETE" => $this->request->delete($url, $this->data),
+            "HEAD" => $this->request->head($this->path(), $this->query),
+            default => throw new OutOfBoundsException()
+        };
     }
 
     protected function withRequest(PendingRequest $request): void
