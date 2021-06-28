@@ -57,6 +57,27 @@ When building your request to send, you can override the following:
 - Request Path using `setPath(string $path)`
 
 
+### Faking a Request
+
+Thanks to a fantastic PR, we can now fake requests for testing. To do so:
+
+```php
+use JustSteveKing\Transporter\Request;
+
+Request::fake();
+
+TestRequest::build()
+    ->withToken('foobar')
+    ->withData([
+        'title' => 'Build a package'
+    ])
+    ->withFakeData([
+        'data' => 'faked'
+    ])
+    ->send();
+```
+
+
 ## Testing
 
 To run the tests in parallel:
