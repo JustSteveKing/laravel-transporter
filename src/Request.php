@@ -12,14 +12,19 @@ use Illuminate\Http\Client\Response;
 use Illuminate\Support\Traits\Macroable;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Factory as HttpFactory;
+use GuzzleHttp\Psr7\Response as Psr7Response;
 
 abstract class Request
 {
     use Macroable {
         __call as macroCall;
     }
+
+    protected static bool $useFake = false;
     
     protected PendingRequest $request;
+
+    protected Response $fakeResponse;
 
     protected string $method;
     protected string $path;
@@ -31,6 +36,11 @@ abstract class Request
     public static function build(...$args): static
     {
         return app(static::class, $args);
+    }
+
+    public static function fake(): void
+    {
+        static::$useFake = true;
     }
 
     public function __construct(HttpFactory $http)
@@ -56,6 +66,13 @@ abstract class Request
 
     public function send(): Response
     {
+        if (static::$useFake) {
+            if (method_exists($this, "fakeResponse")) {
+                return new Response($this->fakeResponse($this->request));
+            }
+            return new Response(new Psr7Response());
+        }
+        
         $url = (string) Str::of($this->path())
             ->when(
                 !empty($this->query),

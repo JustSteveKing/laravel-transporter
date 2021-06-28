@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JustSteveKing\Transporter\Tests;
 
 use Illuminate\Http\Client\PendingRequest;
+use JustSteveKing\Transporter\Request;
 use JustSteveKing\Transporter\Tests\Stubs\PostRequest;
 use JustSteveKing\Transporter\Tests\Stubs\TestRequest;
 use JustSteveKing\Transporter\Tests\TestCase;
@@ -15,6 +16,8 @@ class TransporterTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        Request::fake();
     }
 
     /**
@@ -53,14 +56,36 @@ class TransporterTest extends TestCase
             query: [
                 'postId' => 1,
             ],
-        )->send();
+        )->withFakeData([
+            [
+                "postId"=> 1,
+                "id"=> 1,
+                "name"=> "id labore ex et quam laborum",
+                "email"=> "Eliseo@gardner.biz",
+                "body"=> "laudantium enim quasi est quidem magnam voluptate ipsam eos\ntempora quo necessitatibus\ndolor quam autem quasi\nreiciendis et nam sapiente accusantium"
+            ],
+            [
+                "postId"=> 1,
+                "id"=> 2,
+                "name"=> "quo vero reiciendis velit similique earum",
+                "email"=> "Jayne_Kuhic@sydney.com",
+                "body"=> "est natus enim nihil est dolore omnis voluptatem numquam\net omnis occaecati quod ullam at\nvoluptatem error expedita pariatur\nnihil sint nostrum voluptatem reiciendis et"
+            ],
+            [
+                "postId"=> 1,
+                "id"=> 3,
+                "name"=> "odio adipisci rerum aut animi",
+                "email"=> "Nikita@garfield.biz",
+                "body"=> "quia molestiae reprehenderit quasi aspernatur\naut expedita occaecati aliquam eveniet laudantium\nomnis quibusdam delectus saepe quia accusamus maiores nam est\ncum et ducimus et vero voluptates excepturi deleniti ratione"
+            ]
+        ])->send();
 
         $this->assertFalse(
             condition: empty($response->json()),
         );
 
         $this->assertCount(
-            expectedCount: 5,
+            expectedCount: 3,
             haystack: $response->json()
         );
 
@@ -115,5 +140,15 @@ class TransporterTest extends TestCase
                 __DIR__ . '/../vendor/orchestra/testbench-core/laravel/app/Transporter/Requests/TestRequest.php'
             )
         );
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_create_a_fake_response()
+    {
+        $response = PostRequest::build()->send();
+
+        $this->assertEquals($response->json("userId"), 100);
     }
 }
