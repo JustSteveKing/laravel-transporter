@@ -88,6 +88,8 @@ abstract class Request
     {
         $this->baseUrl = $baseUrl;
 
+        $this->request->baseUrl($baseUrl);
+
         return $this;
     }
 
