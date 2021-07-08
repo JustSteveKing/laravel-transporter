@@ -84,6 +84,13 @@ abstract class Request
         );
     }
 
+    public function setBaseUrl(string $baseUrl): static
+    {
+        $this->baseUrl = $baseUrl;
+
+        return $this;
+    }
+
     public function send(): Response
     {
         if (static::$useFake) {
