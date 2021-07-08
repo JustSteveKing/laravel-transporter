@@ -14,7 +14,7 @@ class TransporterServiceProvider extends PackageServiceProvider
     {
         $package->name(
             name: 'transporter',
-        )->hasCommand(
+        )->hasConfigFile()->hasCommand(
             commandClassName: TransporterCommand::class,
         );
     }

@@ -13,6 +13,7 @@ use Illuminate\Support\Traits\Macroable;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Factory as HttpFactory;
 use GuzzleHttp\Psr7\Response as Psr7Response;
+use RuntimeException;
 
 abstract class Request
 {
@@ -21,7 +22,7 @@ abstract class Request
     }
 
     protected static bool $useFake = false;
-    
+
     protected PendingRequest $request;
 
     protected Response $fakeResponse;
@@ -45,9 +46,13 @@ abstract class Request
 
     public function __construct(HttpFactory $http)
     {
-        $this->request = $http->baseUrl($this->baseUrl);
+        $this->request = $http->baseUrl(
+            url: config('transporter.base_uri') ?? $this->baseUrl,
+        );
 
-        $this->withRequest($this->request);
+        $this->withRequest(
+            request: $this->request,
+        );
     }
 
     public function withData(array $data): static
@@ -64,6 +69,30 @@ abstract class Request
         return $this;
     }
 
+    public function getBaseUrl(): string
+    {
+        if (isset($this->baseUrl)) {
+            return $this->baseUrl;
+        }
+
+        if (! is_null(config('transporter.base_uri'))) {
+            return config('transporter.base_uri');
+        }
+
+        throw new RuntimeException(
+            message: "Neither a baseUrl or a config base_uri has been set for this request.",
+        );
+    }
+
+    public function setBaseUrl(string $baseUrl): static
+    {
+        $this->baseUrl = $baseUrl;
+
+        $this->request->baseUrl($baseUrl);
+
+        return $this;
+    }
+
     public function send(): Response
     {
         if (static::$useFake) {
@@ -72,7 +101,7 @@ abstract class Request
             }
             return new Response(new Psr7Response());
         }
-        
+
         $url = (string) Str::of($this->path())
             ->when(
                 !empty($this->query),
@@ -112,10 +141,10 @@ abstract class Request
         return $this;
     }
 
-    public function __call(string $name, array $arguments): static
+    public function __call(string $method, array $parameters): static
     {
-        if (method_exists($this->request, $name)) {
-            call_user_func_array([$this->request, $name], $arguments);
+        if (method_exists($this->request, $method)) {
+            call_user_func_array([$this->request, $method], $parameters);
 
             return $this;
         }

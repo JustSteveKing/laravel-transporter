@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace JustSteveKing\Transporter\Tests;
 
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Support\Facades\Config;
 use JustSteveKing\Transporter\Request;
+use JustSteveKing\Transporter\Tests\Stubs\BaseUriRequest;
 use JustSteveKing\Transporter\Tests\Stubs\PostRequest;
 use JustSteveKing\Transporter\Tests\Stubs\TestRequest;
 use JustSteveKing\Transporter\Tests\TestCase;
@@ -107,7 +109,7 @@ class TransporterTest extends TestCase
             'body' => 'transporter test',
             'userId' => 1,
         ];
-        
+
         $response = PostRequest::build()->withData(
             data: $data
         )->send();
@@ -150,5 +152,31 @@ class TransporterTest extends TestCase
         $response = PostRequest::build()->send();
 
         $this->assertEquals($response->json("userId"), 100);
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_set_a_base_uri_using_env_and_config()
+    {
+        $request = PostRequest::build();
+
+        $this->assertEquals(
+            expected: 'https://jsonplaceholder.typicode.com',
+            actual: $request->getBaseUrl(),
+        );
+
+        config([
+            'transporter' => [
+                'base_uri' => 'https://example.com'
+            ]
+        ]);
+
+        $request = BaseUriRequest::build();
+
+        $this->assertEquals(
+            expected: 'https://example.com',
+            actual: $request->getBaseUrl(),
+        );
     }
 }
