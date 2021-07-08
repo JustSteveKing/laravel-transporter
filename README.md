@@ -12,15 +12,26 @@ Transporter is a futuristic way to send API requests in PHP. This is an OOP appr
 
 </p>
 
-**This package is still a work in progress**
-
-
 ## Installation
 
 You can install the package via composer:
 
 ```bash
 composer require juststeveking/laravel-transporter
+```
+
+You can publish the config file with:
+
+```bash
+php artisan vendor:publish --provider="JustSteveKing\Transporter\TransporterServiceProvider" --tag="transporter-config"
+```
+
+The contents of the published config file:
+
+```php
+return [
+    'base_uri' => env('TRANSPORTER_BASE_URI'),
+];
 ```
 
 ## Generating Request
@@ -76,7 +87,6 @@ TestRequest::build()
     ])
     ->send();
 ```
-
 
 ## Testing
 
