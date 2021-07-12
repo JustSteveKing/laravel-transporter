@@ -47,7 +47,7 @@ abstract class Request
     public function __construct(HttpFactory $http)
     {
         $this->request = $http->baseUrl(
-            url: config('transporter.base_uri') ?? $this->baseUrl,
+            url: config('transporter.base_uri') ?? $this->baseUrl ?? '',
         );
 
         $this->withRequest(
