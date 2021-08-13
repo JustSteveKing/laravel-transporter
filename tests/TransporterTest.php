@@ -19,7 +19,7 @@ class TransporterTest extends TestCase
     {
         parent::setUp();
 
-        Request::fake();
+        TestRequest::fake();
     }
 
     /**
@@ -42,8 +42,9 @@ class TransporterTest extends TestCase
             path: '/todos/1',
         )->send();
 
-        $this->assertFalse(
-            condition: empty($response->json())
+        $this->assertEquals(
+            expected: [],
+            actual: $response->json(),
         );
     }
 

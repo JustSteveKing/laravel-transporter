@@ -33,6 +33,7 @@ abstract class Request
 
     protected array $query = [];
     protected array $data = [];
+    protected array $fakeData = [];
 
     public static function build(...$args): static
     {
@@ -58,6 +59,13 @@ abstract class Request
     public function withData(array $data): static
     {
         $this->data = array_merge($this->data, $data);
+
+        return $this;
+    }
+
+    public function withFakeData(array $data): static
+    {
+        $this->fakeData = array_merge($this->fakeData, $data);
 
         return $this;
     }
@@ -93,13 +101,19 @@ abstract class Request
         return $this;
     }
 
+    protected function fakeResponse(): Psr7Response
+    {
+        return new Psr7Response(
+            body: json_encode($this->fakeData),
+        );
+    }
+
     public function send(): Response
     {
         if (static::$useFake) {
-            if (method_exists($this, "fakeResponse")) {
-                return new Response($this->fakeResponse($this->request));
-            }
-            return new Response(new Psr7Response());
+            return new Response(
+                response: $this->fakeResponse(),
+            );
         }
 
         $url = (string) Str::of($this->path())

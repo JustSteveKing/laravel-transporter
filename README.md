@@ -70,23 +70,25 @@ When building your request to send, you can override the following:
 
 ### Faking a Request
 
-Thanks to a fantastic PR, we can now fake requests for testing. To do so:
+To fake a request, all you need to do is:
 
 ```php
-use JustSteveKing\Transporter\Request;
+TestRequest::fake();
+```
 
-Request::fake();
+Once you are faking the request, you can:
 
+```php
 TestRequest::build()
     ->withToken('foobar')
     ->withData([
         'title' => 'Build a package'
-    ])
-    ->withFakeData([
+    ])->withFakeData([
         'data' => 'faked'
-    ])
-    ->send();
+    ])->send();
 ```
+
+Which will return a response with the data you pass through to `withFakeData`, which internally will merge what is on the class with what you pass it. So you can build up an initial state of faked data per class.
 
 ## Testing
 
