@@ -70,16 +70,10 @@ When building your request to send, you can override the following:
 
 ### Faking a Request
 
-To fake a request, all you need to do is:
+To fake a request, all you need to do is replace the build method with the fake method:
 
 ```php
-TestRequest::fake();
-```
-
-Once you are faking the request, you can:
-
-```php
-TestRequest::build()
+TestRequest::fake()
     ->withToken('foobar')
     ->withData([
         'title' => 'Build a package'
