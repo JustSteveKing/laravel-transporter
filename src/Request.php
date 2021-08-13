@@ -21,7 +21,7 @@ abstract class Request
         __call as macroCall;
     }
 
-    protected static bool $useFake = false;
+    protected bool $useFake = false;
 
     protected PendingRequest $request;
 
@@ -40,9 +40,13 @@ abstract class Request
         return app(static::class, $args);
     }
 
-    public static function fake(): void
+    public static function fake(): static
     {
-        static::$useFake = true;
+        $request = static::build();
+
+        $request->useFake = true;
+
+        return $request;
     }
 
     public function __construct(HttpFactory $http)
@@ -110,7 +114,7 @@ abstract class Request
 
     public function send(): Response
     {
-        if (static::$useFake) {
+        if ($this->useFake) {
             return new Response(
                 response: $this->fakeResponse(),
             );

@@ -18,8 +18,6 @@ class TransporterTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        TestRequest::fake();
     }
 
     /**
@@ -29,7 +27,7 @@ class TransporterTest extends TestCase
     {
         $this->assertInstanceOf(
             expected: PendingRequest::class,
-            actual: TestRequest::build()->getRequest(),
+            actual: TestRequest::fake()->getRequest(),
         );
     }
 
@@ -38,7 +36,7 @@ class TransporterTest extends TestCase
      */
     public function it_can_send_a_request()
     {
-        $response = TestRequest::build()->setPath(
+        $response = TestRequest::fake()->setPath(
             path: '/todos/1',
         )->send();
 
@@ -53,7 +51,7 @@ class TransporterTest extends TestCase
      */
     public function it_can_add_query_params()
     {
-        $response = TestRequest::build()->setPath(
+        $response = TestRequest::fake()->setPath(
             path: '/comments',
         )->withQuery(
             query: [
@@ -111,7 +109,7 @@ class TransporterTest extends TestCase
             'userId' => 1,
         ];
 
-        $response = PostRequest::build()->withData(
+        $response = PostRequest::fake()->withData(
             data: $data
         )->send();
 
@@ -150,9 +148,12 @@ class TransporterTest extends TestCase
      */
     public function it_can_create_a_fake_response()
     {
-        $response = PostRequest::build()->send();
+        $response = PostRequest::fake()->send();
 
-        $this->assertEquals($response->json("userId"), 100);
+        $this->assertEquals(
+            expected: 100,
+            actual:   $response->json("userId"),
+        );
     }
 
     /**
@@ -160,7 +161,7 @@ class TransporterTest extends TestCase
      */
     public function it_can_set_a_base_uri_using_env_and_config()
     {
-        $request = PostRequest::build();
+        $request = PostRequest::fake();
 
         $this->assertEquals(
             expected: 'https://jsonplaceholder.typicode.com',
@@ -173,7 +174,7 @@ class TransporterTest extends TestCase
             ]
         ]);
 
-        $request = BaseUriRequest::build();
+        $request = BaseUriRequest::fake();
 
         $this->assertEquals(
             expected: 'https://example.com',
