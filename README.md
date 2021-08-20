@@ -79,7 +79,8 @@ TestRequest::fake()
         'title' => 'Build a package'
     ])->withFakeData([
         'data' => 'faked'
-    ])->send();
+    ])->withFakeStatus(404)
+    ->send();
 ```
 
 Which will return a response with the data you pass through to `withFakeData`, which internally will merge what is on the class with what you pass it. So you can build up an initial state of faked data per class.

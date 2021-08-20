@@ -34,6 +34,7 @@ abstract class Request
     protected array $query = [];
     protected array $data = [];
     protected array $fakeData = [];
+    protected int $fakeStatus = 200;
 
     public static function build(...$args): static
     {
@@ -74,6 +75,13 @@ abstract class Request
         return $this;
     }
 
+    public function withFakeStatus(int $status): static
+    {
+        $this->fakeStatus = $status;
+
+        return $this;
+    }
+
     public function withQuery(array $query): static
     {
         $this->query = array_merge($this->query, $query);
@@ -108,6 +116,7 @@ abstract class Request
     protected function fakeResponse(): Psr7Response
     {
         return new Psr7Response(
+            status: $this->fakeStatus,
             body: json_encode($this->fakeData),
         );
     }

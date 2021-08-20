@@ -154,6 +154,23 @@ class TransporterTest extends TestCase
             expected: 100,
             actual:   $response->json("userId"),
         );
+        $this->assertEquals(
+            expected: 200,
+            actual:   $response->status(),
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_create_a_fake_response_with_status()
+    {
+        $response = PostRequest::fake()->withFakeStatus(404)->send();
+
+        $this->assertEquals(
+            expected: 404,
+            actual:   $response->status(),
+        );
     }
 
     /**
