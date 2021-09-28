@@ -113,3 +113,15 @@ it('can set a base uri using env and config', function () {
         BaseUriRequest::fake()->getBaseUrl()
     )->toEqual('https://example.com');
 });
+
+it('can set the response status on fake requests', function () {
+    expect(
+        TestRequest::fake()->send()->status()
+    )->toEqual(Http::OK);
+
+    expect(
+        TestRequest::fake(
+            status: Http::ACCEPTED
+        )->send()->status()
+    )->toEqual(Http::ACCEPTED);
+});
