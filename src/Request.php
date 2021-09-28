@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JustSteveKing\Transporter;
 
+use JustSteveKing\StatusCode\Http;
 use OutOfBoundsException;
 use BadMethodCallException;
 use Illuminate\Support\Str;
@@ -34,17 +35,19 @@ abstract class Request
     protected array $query = [];
     protected array $data = [];
     protected array $fakeData = [];
+    protected int $status;
 
     public static function build(...$args): static
     {
         return app(static::class, $args);
     }
 
-    public static function fake(): static
+    public static function fake(int $status = Http::OK): static
     {
         $request = static::build();
 
         $request->useFake = true;
+        $request->status = $status;
 
         return $request;
     }
@@ -108,7 +111,8 @@ abstract class Request
     protected function fakeResponse(): Psr7Response
     {
         return new Psr7Response(
-            body: json_encode($this->fakeData),
+            status: $this->status,
+            body:   json_encode($this->fakeData),
         );
     }
 
