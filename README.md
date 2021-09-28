@@ -70,16 +70,17 @@ When building your request to send, you can override the following:
 
 ### Faking a Request
 
-To fake a request, all you need to do is replace the build method with the fake method:
+To fake a request, all you need to do is replace the build method with the fake method, which takes an optional `status` parameter, to set the status code being returned with the response:
 
 ```php
-TestRequest::fake()
-    ->withToken('foobar')
-    ->withData([
-        'title' => 'Build a package'
-    ])->withFakeData([
-        'data' => 'faked'
-    ])->send();
+TestRequest::fake(
+    status: 200,
+)->withToken('foobar')
+->withData([
+    'title' => 'Build a package'
+])->withFakeData([
+    'data' => 'faked'
+])->send();
 ```
 
 Which will return a response with the data you pass through to `withFakeData`, which internally will merge what is on the class with what you pass it. So you can build up an initial state of faked data per class.
