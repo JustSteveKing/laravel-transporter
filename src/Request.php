@@ -79,7 +79,7 @@ abstract class Request
 
     public function withQuery(array $query): static
     {
-        $this->query = array_merge($this->query, $query);
+        $this->query = array_merge_recursive($this->query, $query);
 
         return $this;
     }
