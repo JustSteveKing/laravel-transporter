@@ -116,6 +116,11 @@ abstract class Request
         );
     }
 
+    public function energize(): Response
+    {
+        return $this->send();
+    }
+
     public function send(): Response
     {
         if ($this->useFake) {

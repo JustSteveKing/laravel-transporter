@@ -67,6 +67,19 @@ When building your request to send, you can override the following:
 - Request Query Params using `withQuery(array $query)`
 - Request Path using `setPath(string $path)`
 
+### Optional Alias
+
+Instead of the standard `send()` method, it is also possible to use the fun alias `energize()`. *Please note, no sound effects are included.*
+
+```php
+TestRequest::build()
+    ->withToken('foobar')
+    ->withData([
+        'title' => 'Build a package'
+    ])
+    ->energize()
+    ->json();
+```
 
 ### Faking a Request
 
