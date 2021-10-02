@@ -19,6 +19,12 @@ it('can send a request', function () {
     )->send()->json())->toEqual([]);
 });
 
+it('can send a request using energize', function () {
+    expect(TestRequest::fake()->setPath(
+        path: '/todos/1',
+    )->energize()->json())->toEqual([]);
+});
+
 it('can add query parameters', function () {
     $response = TestRequest::fake()->setPath(
         path: '/comments',
