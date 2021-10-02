@@ -28,26 +28,26 @@ it('can add query parameters', function () {
                ],
     )->withFakeData([
         [
-            "postId"=> 1,
-            "id"=> 1,
-            "name"=> "id labore ex et quam laborum",
-            "email"=> "Eliseo@gardner.biz",
-            "body"=> "laudantium enim quasi est quidem magnam voluptate ipsam eos\ntempora quo necessitatibus\ndolor quam autem quasi\nreiciendis et nam sapiente accusantium"
+            'postId' => 1,
+            'id' => 1,
+            'name' => 'id labore ex et quam laborum',
+            'email' => 'Eliseo@gardner.biz',
+            'body' => "laudantium enim quasi est quidem magnam voluptate ipsam eos\ntempora quo necessitatibus\ndolor quam autem quasi\nreiciendis et nam sapiente accusantium",
         ],
         [
-            "postId"=> 1,
-            "id"=> 2,
-            "name"=> "quo vero reiciendis velit similique earum",
-            "email"=> "Jayne_Kuhic@sydney.com",
-            "body"=> "est natus enim nihil est dolore omnis voluptatem numquam\net omnis occaecati quod ullam at\nvoluptatem error expedita pariatur\nnihil sint nostrum voluptatem reiciendis et"
+            'postId' => 1,
+            'id' => 2,
+            'name' => 'quo vero reiciendis velit similique earum',
+            'email' => 'Jayne_Kuhic@sydney.com',
+            'body' => "est natus enim nihil est dolore omnis voluptatem numquam\net omnis occaecati quod ullam at\nvoluptatem error expedita pariatur\nnihil sint nostrum voluptatem reiciendis et",
         ],
         [
-            "postId"=> 1,
-            "id"=> 3,
-            "name"=> "odio adipisci rerum aut animi",
-            "email"=> "Nikita@garfield.biz",
-            "body"=> "quia molestiae reprehenderit quasi aspernatur\naut expedita occaecati aliquam eveniet laudantium\nomnis quibusdam delectus saepe quia accusamus maiores nam est\ncum et ducimus et vero voluptates excepturi deleniti ratione"
-        ]
+            'postId' => 1,
+            'id' => 3,
+            'name' => 'odio adipisci rerum aut animi',
+            'email' => 'Nikita@garfield.biz',
+            'body' => "quia molestiae reprehenderit quasi aspernatur\naut expedita occaecati aliquam eveniet laudantium\nomnis quibusdam delectus saepe quia accusamus maiores nam est\ncum et ducimus et vero voluptates excepturi deleniti ratione",
+        ],
     ])->send();
 
     expect(
@@ -76,7 +76,7 @@ it('can add data to the request', function () {
 it('can create a new api request using the command', function () {
     expect(
         file_exists(
-            filename: __DIR__ . '/../../stubs/api-request.stub',
+            filename: __DIR__.'/../../stubs/api-request.stub',
         )
     )->toBeTrue();
 
@@ -87,7 +87,7 @@ it('can create a new api request using the command', function () {
 
     expect(
         file_exists(
-            filename: __DIR__ . '/../../vendor/orchestra/testbench-core/laravel/app/Transporter/Requests/TestRequest.php'
+            filename: __DIR__.'/../../vendor/orchestra/testbench-core/laravel/app/Transporter/Requests/TestRequest.php'
         )
     )->toBeTrue();
 });
@@ -105,12 +105,26 @@ it('can set a base uri using env and config', function () {
 
     config([
         'transporter' => [
-            'base_uri' => 'https://example.com'
-        ]
+            'base_uri' => 'https://example.com',
+        ],
     ]);
 
     expect(
         BaseUriRequest::fake()->getBaseUrl()
+    )->toEqual('https://example.com');
+});
+
+it('can set a base uri using lockOn alias', function () {
+    expect(
+        PostRequest::fake()->getBaseUrl(),
+    )->toEqual('https://jsonplaceholder.typicode.com');
+
+    $request = PostRequest::fake()->lockOn(
+        baseUrl: 'https://example.com'
+    );
+
+    expect(
+       $request->getBaseUrl()
     )->toEqual('https://example.com');
 });
 
