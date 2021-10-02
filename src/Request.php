@@ -99,6 +99,11 @@ abstract class Request
         );
     }
 
+    public function lockOn(string $baseUrl): static
+    {
+        return $this->setBaseUrl($baseUrl); 
+    }
+
     public function setBaseUrl(string $baseUrl): static
     {
         $this->baseUrl = $baseUrl;
