@@ -79,7 +79,7 @@ abstract class Request
 
     public function withQuery(array $query): static
     {
-        $this->query = array_merge($this->query, $query);
+        $this->query = array_merge_recursive($this->query, $query);
 
         return $this;
     }
@@ -166,6 +166,11 @@ abstract class Request
         return $this->request;
     }
 
+    public function getQuery(): array
+    {
+        return $this->query;
+    }
+    
     public function setPath(string $path): static
     {
         $this->path = $path;
