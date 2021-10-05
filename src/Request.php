@@ -156,6 +156,11 @@ abstract class Request
         return $this->request;
     }
 
+    public function getQuery(): array
+    {
+        return $this->query;
+    }
+    
     public function setPath(string $path): static
     {
         $this->path = $path;

@@ -125,3 +125,40 @@ it('can set the response status on fake requests', function () {
         )->send()->status()
     )->toEqual(Http::ACCEPTED);
 });
+
+it('can add query parameters recursively without overwriting', function () {
+    $query = TestRequest::fake()
+        ->withQuery(
+            query: [
+                       'postId' => 1,
+                   ],
+        )->withQuery(
+            query: [
+                        'page' => [
+                            'number' => 2,
+                        ],
+                    ],
+        )->withQuery(
+            query: [
+                        'page' => [
+                            'size' => 30,
+                        ],
+                    ],
+        )->getQuery();
+
+    expect(
+        $query
+    )->toBeArray()->toHaveCount(2);
+
+    expect(
+        $query['page']
+    )->toBeArray()->toHaveCount(2);
+
+    expect(
+        $query['page']['number']
+    )->toBe(2);
+
+    expect(
+        $query['page']['size']
+    )->toBe(30);
+});
