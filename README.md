@@ -67,6 +67,67 @@ When building your request to send, you can override the following:
 - Request Query Params using `withQuery(array $query)`
 - Request Path using `setPath(string $path)`
 
+### Concurrent
+
+```php
+$responses = \JustSteveKing\Transporter\Facades\Concurrently::build()->setRequests([
+    TestRequest::build()
+        ->withToken('foobar')
+        ->withData([
+        'title' => 'Build a package'
+    ]),
+    TestRequest::build()
+        ->withToken('foobar')
+        ->withData([
+        'title' => 'Build a package'
+    ]),
+    TestRequest::build()
+        ->withToken('foobar')
+        ->withData([
+        'title' => 'Build a package'
+    ]),
+]);
+
+$responses[0]->json();
+$responses[1]->json();
+$responses[2]->json();
+```
+
+### Concurrency with Custom key
+
+```php
+$responses = \JustSteveKing\Transporter\Facades\Concurrently::build()->setRequests([
+    TestRequest::build()
+        ->as(
+            key: 'first'
+        )
+        ->withToken('foobar')
+        ->withData([
+        'title' => 'Build a package'
+    ]),
+    TestRequest::build()
+        ->as(
+            key: 'second'
+        )
+        ->withToken('foobar')
+        ->withData([
+        'title' => 'Build a package'
+    ]),
+    TestRequest::build()
+        ->as(
+            key: 'third'
+        )
+        ->withToken('foobar')
+        ->withData([
+        'title' => 'Build a package'
+    ]),
+]);
+
+$responses['first']->json();
+$responses['second']->json();
+$responses['third']->json();
+```
+
 ### Optional Alias
 
 Instead of the standard `send()` method, it is also possible to use the fun alias `energize()`. *Please note, no sound effects are included.*
@@ -81,7 +142,7 @@ TestRequest::build()
     ->json();
 ```
 
-### Faking a Request
+### Faking a Request or Concurrent
 
 To fake a request, all you need to do is replace the build method with the fake method, which takes an optional `status` parameter, to set the status code being returned with the response:
 
@@ -94,6 +155,26 @@ TestRequest::fake(
 ])->withFakeData([
     'data' => 'faked'
 ])->send();
+```
+
+```php
+$responses = Concurrently::fake()->setRequests([
+    TestRequest::fake()->setPath(
+        path: '/todos/1',
+    )->as(
+        key: 'first'
+    ),
+    TestRequest::fake()->setPath(
+        path: '/todos/2',
+    )->as(
+        key: 'second'
+    ),
+    TestRequest::fake()->setPath(
+        path: '/todos/3',
+    )->as(
+        key: 'thirds'
+    ),
+])->run();
 ```
 
 Which will return a response with the data you pass through to `withFakeData`, which internally will merge what is on the class with what you pass it. So you can build up an initial state of faked data per class.

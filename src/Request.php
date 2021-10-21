@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace JustSteveKing\Transporter;
 
+use GuzzleHttp\Promise\Promise;
+use Illuminate\Http\Client\Pool;
 use JustSteveKing\StatusCode\Http;
 use OutOfBoundsException;
 use BadMethodCallException;
@@ -32,6 +34,7 @@ abstract class Request
     protected string $path;
     protected string $baseUrl;
 
+    protected ?string $as = null;
     protected array $query = [];
     protected array $data = [];
     protected array $fakeData = [];
@@ -61,6 +64,18 @@ abstract class Request
         $this->withRequest(
             request: $this->request,
         );
+    }
+
+    public function getAs(): ?string
+    {
+        return $this->as;
+    }
+
+    public function as(string|int $as): static
+    {
+        $this->as = $as;
+
+        return $this;
     }
 
     public function withData(array $data): static
@@ -101,7 +116,7 @@ abstract class Request
 
     public function lockOn(string $baseUrl): static
     {
-        return $this->setBaseUrl($baseUrl); 
+        return $this->setBaseUrl($baseUrl);
     }
 
     public function setBaseUrl(string $baseUrl): static
@@ -113,12 +128,35 @@ abstract class Request
         return $this;
     }
 
-    protected function fakeResponse(): Psr7Response
+    public function fakeResponse(): Psr7Response
     {
         return new Psr7Response(
             status: $this->status,
             body:   json_encode($this->fakeData),
         );
+    }
+
+    public function buildForConcurrent(Pool $pool): mixed
+    {
+        /**
+         * @var $poolItem Pool
+         */
+        $poolItem = match ($this->as === null) {
+            false => $pool->as(
+                key: $this->as
+            ),
+            true => $pool
+        };
+
+        return match (strtoupper($this->method)) {
+            "GET" => $poolItem->get($this->getUrl(), $this->query),
+            "POST" => $poolItem->post($this->getUrl(), $this->data),
+            "PUT" => $poolItem->put($this->getUrl(), $this->data),
+            "PATCH" => $poolItem->patch($this->getUrl(), $this->data),
+            "DELETE" => $poolItem->delete($this->getUrl(), $this->data),
+            "HEAD" => $poolItem->head($this->getUrl(), $this->query),
+            default => throw new OutOfBoundsException()
+        };
     }
 
     public function energize(): Response
@@ -134,21 +172,28 @@ abstract class Request
             );
         }
 
-        $url = (string) Str::of($this->path())
-            ->when(
-                !empty($this->query),
-                fn (Stringable $path): Stringable => $path->append('?', http_build_query($this->query))
-            );
-
         return match (mb_strtoupper($this->method)) {
-            "GET" => $this->request->get($this->path(), $this->query),
-            "POST" => $this->request->post($url, $this->data),
-            "PUT" => $this->request->put($url, $this->data),
-            "PATCH" => $this->request->patch($url, $this->data),
-            "DELETE" => $this->request->delete($url, $this->data),
-            "HEAD" => $this->request->head($this->path(), $this->query),
+            "GET" => $this->request->get($this->getUrl(), $this->query),
+            "POST" => $this->request->post($this->getUrl(), $this->data),
+            "PUT" => $this->request->put($this->getUrl(), $this->data),
+            "PATCH" => $this->request->patch($this->getUrl(), $this->data),
+            "DELETE" => $this->request->delete($this->getUrl(), $this->data),
+            "HEAD" => $this->request->head($this->getUrl(), $this->query),
             default => throw new OutOfBoundsException()
         };
+    }
+
+    public function getUrl(): string
+    {
+        $url = (string) Str::of($this->path())
+                           ->when(
+                               !empty($this->query),
+                               fn (Stringable $path): Stringable => $path->append('?', http_build_query($this->query))
+                           );
+        if(Str::of($this->method)->upper()->contains('GET','HEAD')){
+            return $this->path();
+        }
+        return $url;
     }
 
     protected function withRequest(PendingRequest $request): void
@@ -170,7 +215,7 @@ abstract class Request
     {
         return $this->query;
     }
-    
+
     public function setPath(string $path): static
     {
         $this->path = $path;
