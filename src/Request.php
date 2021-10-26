@@ -203,7 +203,7 @@ abstract class Request
 
     protected function path(): string
     {
-        return $this->path;
+        return $this->path ?? '';
     }
 
     public function getRequest(): PendingRequest
