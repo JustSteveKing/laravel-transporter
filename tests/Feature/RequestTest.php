@@ -375,3 +375,17 @@ it('can add query parameters recursively without overwriting', function () {
         $query['page']['size']
     )->toBe(30);
 });
+
+it('can get the request payload', function () {
+    $data = [
+        'pest' => 'test',
+    ];
+
+    expect(
+        PostRequest::build()->withData(
+            data: $data,
+        )->payload(),
+    )->toEqual(
+        expected: $data,
+    );
+});

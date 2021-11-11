@@ -20,16 +20,25 @@ class Concurrently
 
     protected bool $isFake = false;
 
+    /**
+     * @param HttpFactory $http
+     * @return void
+     */
     public function __construct(
         private HttpFactory $http
-    ) {
-    }
+    ) { }
 
+    /**
+     * @return static
+     */
     public function build(): static
     {
         return app(static::class);
     }
 
+    /**
+     * @return static
+     */
     public function fake(): static
     {
         $concurrent = $this->build();
@@ -39,6 +48,10 @@ class Concurrently
         return $concurrent;
     }
 
+    /**
+     * @param array $requests
+     * @return static
+     */
     public function setRequests(array $requests): static
     {
         $this->requests = $requests;
@@ -53,6 +66,10 @@ class Concurrently
         return $this;
     }
 
+    /**
+     * @param Request $request
+     * @return static
+     */
     public function add(Request $request): static
     {
         if ($request->getAs() !== null) {
@@ -64,6 +81,9 @@ class Concurrently
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function run(): array
     {
         if ($this->isFake) {
@@ -75,6 +95,10 @@ class Concurrently
             ->toArray();
     }
 
+    /**
+     * @param $pool
+     * @return array
+     */
     private function buildRequestsPool($pool): array
     {
         $requests = [];

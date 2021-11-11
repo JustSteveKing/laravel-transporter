@@ -34,17 +34,25 @@ abstract class Request
     protected string $path;
     protected string $baseUrl;
 
-    protected ?string $as = null;
+    protected null|string $as = null;
     protected array $query = [];
     protected array $data = [];
     protected array $fakeData = [];
     protected int $status;
 
+    /**
+     * @param array $args
+     * @return static
+     */
     public static function build(...$args): static
     {
         return app(static::class, $args);
     }
 
+    /**
+     * @param int $status
+     * @return static
+     */
     public static function fake(int $status = Http::OK): static
     {
         $request = static::build();
@@ -55,6 +63,10 @@ abstract class Request
         return $request;
     }
 
+    /**
+     * @param HttpFactory $http
+     * @return void
+     */
     public function __construct(HttpFactory $http)
     {
         $this->request = $http->baseUrl(
@@ -66,11 +78,18 @@ abstract class Request
         );
     }
 
-    public function getAs(): ?string
+    /**
+     * @return string|null
+     */
+    public function getAs(): null|string
     {
         return $this->as;
     }
 
+    /**
+     * @param string|int $as
+     * @return static
+     */
     public function as(string|int $as): static
     {
         $this->as = $as;
@@ -78,6 +97,10 @@ abstract class Request
         return $this;
     }
 
+    /**
+     * @param array $data
+     * @return static
+     */
     public function withData(array $data): static
     {
         $this->data = array_merge($this->data, $data);
@@ -85,6 +108,18 @@ abstract class Request
         return $this;
     }
 
+    /**
+     * @return array
+     */
+    public function payload(): array
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param array $data
+     * @return static
+     */
     public function withFakeData(array $data): static
     {
         $this->fakeData = array_merge($this->fakeData, $data);
@@ -92,6 +127,10 @@ abstract class Request
         return $this;
     }
 
+    /**
+     * @param array $query
+     * @return static
+     */
     public function withQuery(array $query): static
     {
         $this->query = array_merge_recursive($this->query, $query);
@@ -99,6 +138,10 @@ abstract class Request
         return $this;
     }
 
+    /**
+     * @return string
+     * @throws RuntimeException
+     */
     public function getBaseUrl(): string
     {
         if (isset($this->baseUrl)) {
@@ -114,11 +157,19 @@ abstract class Request
         );
     }
 
+    /**
+     * @param string $baseUrl
+     * @return static
+     */
     public function lockOn(string $baseUrl): static
     {
         return $this->setBaseUrl($baseUrl);
     }
 
+    /**
+     * @param string $baseUrl
+     * @return static
+     */
     public function setBaseUrl(string $baseUrl): static
     {
         $this->baseUrl = $baseUrl;
@@ -128,6 +179,9 @@ abstract class Request
         return $this;
     }
 
+    /**
+     * @return Psr7Response
+     */
     public function fakeResponse(): Psr7Response
     {
         return new Psr7Response(
@@ -136,6 +190,10 @@ abstract class Request
         );
     }
 
+    /**
+     * @param Pool $pool
+     * @return mixed
+     */
     public function buildForConcurrent(Pool $pool): mixed
     {
         /**
@@ -159,11 +217,17 @@ abstract class Request
         };
     }
 
+    /**
+     * @return Response
+     */
     public function energize(): Response
     {
         return $this->send();
     }
 
+    /**
+     * @return Response
+     */
     public function send(): Response
     {
         if ($this->useFake) {
@@ -183,6 +247,9 @@ abstract class Request
         };
     }
 
+    /**
+     * @return string
+     */
     public function getUrl(): string
     {
         $url = (string) Str::of($this->path())
@@ -196,26 +263,43 @@ abstract class Request
         return $url;
     }
 
+    /**
+     * @param PendingRequest $request
+     * @return void
+     */
     protected function withRequest(PendingRequest $request): void
     {
         // do something with the initialized request
     }
 
+    /**
+     * @return string
+     */
     protected function path(): string
     {
         return $this->path ?? '';
     }
 
+    /**
+     * @return PendingRequest
+     */
     public function getRequest(): PendingRequest
     {
         return $this->request;
     }
 
+    /**
+     * @return array
+     */
     public function getQuery(): array
     {
         return $this->query;
     }
 
+    /**
+     * @param string $path
+     * @return static
+     */
     public function setPath(string $path): static
     {
         $this->path = $path;
@@ -223,6 +307,11 @@ abstract class Request
         return $this;
     }
 
+    /**
+     * @param string $method
+     * @param array $parameters
+     * @return static
+     */
     public function __call(string $method, array $parameters): static
     {
         if (method_exists($this->request, $method)) {

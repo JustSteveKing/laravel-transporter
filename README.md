@@ -67,7 +67,23 @@ When building your request to send, you can override the following:
 - Request Query Params using `withQuery(array $query)`
 - Request Path using `setPath(string $path)`
 
-### Concurrent
+
+### Checking the payload
+
+I had a request in an issue to be able to see the request data for a request, so I have added a helper method called `payload` which will return whatever has been stored in the request `data` property.
+
+```php
+$request = TestRequest::build()
+    ->withToken('foobar')
+    ->withData([
+        'title' => 'Build a package'
+    ]);
+
+$data = $request->payload(); // ['title' => 'Build a package']
+```
+
+
+### Concurrent Requests
 
 ```php
 $responses = \JustSteveKing\Transporter\Facades\Concurrently::build()->setRequests([
@@ -93,7 +109,7 @@ $responses[1]->json();
 $responses[2]->json();
 ```
 
-### Concurrency with Custom key
+### Concurrency with a Custom key
 
 ```php
 $responses = \JustSteveKing\Transporter\Facades\Concurrently::build()->setRequests([
@@ -178,6 +194,38 @@ $responses = Concurrently::fake()->setRequests([
 ```
 
 Which will return a response with the data you pass through to `withFakeData`, which internally will merge what is on the class with what you pass it. So you can build up an initial state of faked data per class.
+
+### Sending XML
+
+Thanks to a fantastic suggestion by [@jessarcher](https://github.com/jessarcher) we can use a `Trait` to allow for easy use of XML in your requests. Using this as a trait makes a lot of sense as most APIs these days use JSON, so it is purely opt in. 
+To use this, simply use the trait on your request:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Transporter\Requests;
+
+use JustSteveKing\Transporter\Concerns\SendsXml;
+use JustSteveKing\Transporter\Request;
+
+class XmlRequest extends Request
+{
+    use SendsXml;
+    
+    protected string $method = 'POST';
+    
+    protected string $path = '/your-endpoint';
+}
+```
+Then all you need to do is call the methods:
+
+```php
+XmlRequest::build()->withXml(
+    xml: '<todo><name>Send an XML Requets</name><completed>false</completed></todo>'
+)->send();
+```
 
 ## Testing
 
