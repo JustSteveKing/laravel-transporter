@@ -29,11 +29,12 @@ class Concurrently
     ) { }
 
     /**
+     * @param array $args
      * @return static
      */
-    public function build(): static
+    public function build(...$args): static
     {
-        return app(static::class);
+        return app(static::class, $args);
     }
 
     /**

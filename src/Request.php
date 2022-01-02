@@ -27,6 +27,7 @@ abstract class Request
     protected bool $useFake = false;
 
     protected PendingRequest $request;
+    protected array $pendingRequestCalls = [];
 
     protected Response $fakeResponse;
 
@@ -67,15 +68,8 @@ abstract class Request
      * @param HttpFactory $http
      * @return void
      */
-    public function __construct(HttpFactory $http)
+    public function __construct(private HttpFactory $http)
     {
-        $this->request = $http->baseUrl(
-            url: $this->baseUrl ?? config('transporter.base_uri') ?? '',
-        );
-
-        $this->withRequest(
-            request: $this->request,
-        );
     }
 
     /**
@@ -174,7 +168,9 @@ abstract class Request
     {
         $this->baseUrl = $baseUrl;
 
-        $this->request->baseUrl($baseUrl);
+        if (isset($this->request)) {
+            $this->request->baseUrl($baseUrl);
+        }
 
         return $this;
     }
@@ -196,23 +192,15 @@ abstract class Request
      */
     public function buildForConcurrent(Pool $pool): mixed
     {
-        /**
-         * @var $poolItem Pool
-         */
-        $poolItem = match ($this->as === null) {
-            false => $pool->as(
-                key: $this->as
-            ),
-            true => $pool
-        };
+        $this->ensureRequest($pool);
 
-        return match (strtoupper($this->method)) {
-            "GET" => $poolItem->get($this->getUrl(), $this->query),
-            "POST" => $poolItem->post($this->getUrl(), $this->data),
-            "PUT" => $poolItem->put($this->getUrl(), $this->data),
-            "PATCH" => $poolItem->patch($this->getUrl(), $this->data),
-            "DELETE" => $poolItem->delete($this->getUrl(), $this->data),
-            "HEAD" => $poolItem->head($this->getUrl(), $this->query),
+        return match (mb_strtoupper($this->method)) {
+            "GET" => $this->request->get($this->getUrl(), $this->query),
+            "POST" => $this->request->post($this->getUrl(), $this->data),
+            "PUT" => $this->request->put($this->getUrl(), $this->data),
+            "PATCH" => $this->request->patch($this->getUrl(), $this->data),
+            "DELETE" => $this->request->delete($this->getUrl(), $this->data),
+            "HEAD" => $this->request->head($this->getUrl(), $this->query),
             default => throw new OutOfBoundsException()
         };
     }
@@ -235,6 +223,8 @@ abstract class Request
                 response: $this->fakeResponse(),
             );
         }
+
+        $this->ensureRequest();
 
         return match (mb_strtoupper($this->method)) {
             "GET" => $this->request->get($this->getUrl(), $this->query),
@@ -285,6 +275,7 @@ abstract class Request
      */
     public function getRequest(): PendingRequest
     {
+        $this->ensureRequest();
         return $this->request;
     }
 
@@ -308,16 +299,52 @@ abstract class Request
     }
 
     /**
+     * @param Pool $pool
+     */
+    private function ensureRequest(null|Pool $pool = null): void
+    {
+        if (! isset($this->request)) {
+            if ($pool === null) {
+                $this->request = $this->http->baseUrl(
+                    url: $this->baseUrl ?? config('transporter.base_uri') ?? '',
+                );
+            } else {
+                $this->request = match ($this->as === null) {
+                    false => $pool->as(
+                        key: $this->as
+                    ),
+                    true => $pool->baseUrl(
+                        url: $this->baseUrl ?? config('transporter.base_uri') ?? '',
+                    )
+                };
+            }
+
+            $this->withRequest($this->request);
+
+            foreach ($this->pendingRequestCalls as $call) {
+                call_user_func_array([$this->request, $call[0]], $call[1]);
+            }
+        }
+    }
+
+    /**
      * @param string $method
      * @param array $parameters
      * @return static
      */
     public function __call(string $method, array $parameters): static
     {
-        if (method_exists($this->request, $method)) {
-            call_user_func_array([$this->request, $method], $parameters);
+        if (isset($this->request)) {
+            if (method_exists($this->request, $method)) {
+                call_user_func_array([$this->request, $method], $parameters);
 
-            return $this;
+                return $this;
+            }
+        } else {
+            if (method_exists(PendingRequest::class, $method)) {
+                $this->pendingRequestCalls[] = [$method, $parameters];
+                return $this;
+            }
         }
 
         throw new BadMethodCallException();

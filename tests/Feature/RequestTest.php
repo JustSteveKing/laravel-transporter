@@ -389,3 +389,46 @@ it('can get the request payload', function () {
         expected: $data,
     );
 });
+
+it('applies pending request calls', function () {
+    $http = app(\Illuminate\Http\Client\Factory::class);
+    $http->fake();
+
+    TestRequest::build(http: $http)
+        ->withHeaders(['X-Test' => 'test'])
+        ->send();
+
+    $http->assertSent(function (\Illuminate\Http\Client\Request $request) {
+        return $request->hasHeader('X-Test', 'test');
+    });
+});
+
+it('applies withRequest and pending request calls concurrently', function () {
+    $http = app(\Illuminate\Http\Client\Factory::class);
+    $http->fake();
+
+    $requests = [
+        TestRequest::build(http: $http)
+            ->as('first')
+            ->withHeaders(['X-Test' => '1']),
+        TestRequest::build(http: $http)
+            ->as('second')
+            ->withHeaders(['X-Test' => '2']),
+    ];
+
+    expect(
+        Concurrently::build(http: $http)->setRequests($requests)->run()
+    )->toHaveKeys(['first', 'second']);
+
+    $http->assertSent(function (\Illuminate\Http\Client\Request $request) {
+        return
+            $request->hasHeader('Authorization', 'Bearer foobar') &&
+            $request->hasHeader('X-Test', '1');
+    });
+
+    $http->assertSent(function (\Illuminate\Http\Client\Request $request) {
+        return
+            $request->hasHeader('Authorization', 'Bearer foobar') &&
+            $request->hasHeader('X-Test', '2');
+    });
+});
