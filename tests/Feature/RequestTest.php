@@ -119,6 +119,20 @@ it('can run concurrent requests', function () {
     expect($responses)->toBeArray()->toHaveCount(3);
 });
 
+it('does not run concurrent requests twice', function () {
+    $http = app(\Illuminate\Http\Client\Factory::class);
+    $http->fake();
+
+    $requests = [
+        TestRequest::build(http: $http),
+        TestRequest::build(http: $http),
+    ];
+
+    Concurrently::build(http: $http)->setRequests($requests)->run();
+
+    $http->assertSentCount(2);
+});
+
 it('can actually run concurrency', function () {
     $requests = [
         TestRequest::fake()->withQuery(

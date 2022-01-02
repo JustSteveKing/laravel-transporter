@@ -55,7 +55,7 @@ class Concurrently
      */
     public function setRequests(array $requests): static
     {
-        $this->requests = $requests;
+        $this->requests = [];
         foreach ($requests as $request) {
             if ($request->getAs() !== null) {
                 $this->requests[$request->getAs()] = $request;
