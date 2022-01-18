@@ -29,11 +29,12 @@ class Concurrently
     ) { }
 
     /**
+     * @param array $args
      * @return static
      */
-    public function build(): static
+    public function build(...$args): static
     {
-        return app(static::class);
+        return app(static::class, $args);
     }
 
     /**
@@ -54,7 +55,7 @@ class Concurrently
      */
     public function setRequests(array $requests): static
     {
-        $this->requests = $requests;
+        $this->requests = [];
         foreach ($requests as $request) {
             if ($request->getAs() !== null) {
                 $this->requests[$request->getAs()] = $request;
