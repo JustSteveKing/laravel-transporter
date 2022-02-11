@@ -24,7 +24,7 @@
     ],
     "require": {
         "php": "^8.0",
-        "illuminate/contracts": "^8.37",
+        "illuminate/contracts": "^8.37|^9.0",
         "juststeveking/http-status-code": "^2.0",
         "juststeveking/uri-builder": "^1.1",
         "spatie/laravel-package-tools": "^1.4.3"
