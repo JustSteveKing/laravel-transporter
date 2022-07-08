@@ -17,7 +17,6 @@ use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Factory as HttpFactory;
 use GuzzleHttp\Psr7\Response as Psr7Response;
 use RuntimeException;
-use Illuminate\Http\Client\PendingRequest;
 
 /**
  * @mixin PendingRequest
