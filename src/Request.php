@@ -17,6 +17,9 @@ use Illuminate\Http\Client\Factory as HttpFactory;
 use GuzzleHttp\Psr7\Response as Psr7Response;
 use RuntimeException;
 
+/**
+ * @mixin PendingRequest
+ */
 abstract class Request
 {
     use Macroable {
