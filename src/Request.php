@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace JustSteveKing\Transporter;
 
-use GuzzleHttp\Promise\Promise;
 use Illuminate\Http\Client\Pool;
 use JustSteveKing\StatusCode\Http;
 use OutOfBoundsException;
@@ -299,7 +298,7 @@ abstract class Request
     }
 
     /**
-     * @param Pool $pool
+     * @param Pool|null $pool
      */
     private function ensureRequest(null|Pool $pool = null): void
     {
@@ -310,9 +309,11 @@ abstract class Request
                 );
             } else {
                 $this->request = match ($this->as === null) {
-                    false => $pool->as(
-                        key: $this->as
-                    ),
+                    false => $pool
+                        ->as(key: $this->as)
+                        ->baseUrl(
+                            url: $this->baseUrl ?? config('transporter.base_uri') ?? '',
+                        ),
                     true => $pool->baseUrl(
                         url: $this->baseUrl ?? config('transporter.base_uri') ?? '',
                     )
