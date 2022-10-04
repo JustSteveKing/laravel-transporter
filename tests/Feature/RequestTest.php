@@ -311,6 +311,22 @@ it('can create a fake response', function () {
     )->toEqual(100);
 });
 
+it('can append a string to the path', function () {
+    $request = PostRequest::fake();
+
+    expect(
+        $request->path(),
+    )->toEqual('/posts');
+
+    $request->appendPath(
+        appends: '1234',
+    );
+
+    expect(
+        $request->path(),
+    )->toEqual('/posts/1234');
+});
+
 it('can set a base uri using env and config', function () {
     expect(
         PostRequest::fake()->getBaseUrl(),
