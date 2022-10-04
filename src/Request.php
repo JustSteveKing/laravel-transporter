@@ -264,7 +264,7 @@ abstract class Request
     /**
      * @return string
      */
-    protected function path(): string
+    public function path(): string
     {
         return $this->path ?? '';
     }
@@ -326,6 +326,13 @@ abstract class Request
                 call_user_func_array([$this->request, $call[0]], $call[1]);
             }
         }
+    }
+
+    public function appendPath(string $appends): static
+    {
+        $this->path = "{$this->path}/{$appends}";
+
+        return $this;
     }
 
     /**
