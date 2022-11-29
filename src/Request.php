@@ -39,6 +39,7 @@ abstract class Request
     protected array $data = [];
     protected array $fakeData = [];
     protected int $status;
+    protected bool $throws = false;
 
     /**
      * @param array $args
@@ -160,6 +161,28 @@ abstract class Request
     }
 
     /**
+     * @param string $throws
+     * @return static
+     */
+    public function throw(bool $throws = true): static
+    {
+        $this->throws = $throws;
+
+        return $this;
+    }
+
+    /**
+     * @param mixed $condition
+     * @return static
+     */
+    public function throwIf($condition)
+    {
+        return value($condition)
+            ? $this->throw()
+            : $this;
+    }
+
+    /**
      * @param string $baseUrl
      * @return static
      */
@@ -225,7 +248,7 @@ abstract class Request
 
         $this->ensureRequest();
 
-        return match (mb_strtoupper($this->method)) {
+        $request = match (mb_strtoupper($this->method)) {
             "GET" => $this->request->get($this->getUrl(), $this->query),
             "POST" => $this->request->post($this->getUrl(), $this->data),
             "PUT" => $this->request->put($this->getUrl(), $this->data),
@@ -234,6 +257,8 @@ abstract class Request
             "HEAD" => $this->request->head($this->getUrl(), $this->query),
             default => throw new OutOfBoundsException()
         };
+
+        return $request->throwIf($this->throws);
     }
 
     /**
@@ -246,7 +271,7 @@ abstract class Request
                                !empty($this->query),
                                fn (Stringable $path): Stringable => $path->append('?', http_build_query($this->query))
                            );
-        if(Str::of($this->method)->upper()->contains('GET','HEAD')){
+        if (Str::of($this->method)->upper()->contains('GET', 'HEAD')) {
             return $this->path();
         }
         return $url;

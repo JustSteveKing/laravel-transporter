@@ -1,13 +1,16 @@
 <?php
 
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Artisan;
-use JustSteveKing\StatusCode\Http;
+use Illuminate\Support\Facades\Http;
+use JustSteveKing\StatusCode\Http as Status;
 use JustSteveKing\Transporter\Facades\Concurrently;
 use JustSteveKing\Transporter\Commands\TransporterCommand;
 use JustSteveKing\Transporter\Tests\Stubs\BaseUriRequest;
 use JustSteveKing\Transporter\Tests\Stubs\PostRequest;
 use JustSteveKing\Transporter\Tests\Stubs\TestRequest;
+use JustSteveKing\Transporter\Tests\Stubs\ThrowingRequest;
 
 it('can create a pending request', function () {
     expect(TestRequest::fake()->getRequest())
@@ -283,7 +286,7 @@ it('can add data to the request', function () {
         PostRequest::fake()->withData(
             data: $data
         )->send()->status(),
-    )->toEqual(Http::OK);
+    )->toEqual(Status::OK);
 });
 
 it('can create a new api request using the command', function () {
@@ -353,20 +356,20 @@ it('can set a base uri using lockOn alias', function () {
     );
 
     expect(
-       $request->getBaseUrl()
+        $request->getBaseUrl()
     )->toEqual('https://example.com');
 });
 
 it('can set the response status on fake requests', function () {
     expect(
         TestRequest::fake()->send()->status()
-    )->toEqual(Http::OK);
+    )->toEqual(Status::OK);
 
     expect(
         TestRequest::fake(
-            status: Http::ACCEPTED
+            status: Status::ACCEPTED
         )->send()->status()
-    )->toEqual(Http::ACCEPTED);
+    )->toEqual(Status::ACCEPTED);
 });
 
 it('can add query parameters recursively without overwriting', function () {
@@ -462,3 +465,8 @@ it('applies withRequest and pending request calls concurrently', function () {
             $request->hasHeader('X-Test', '2');
     });
 });
+
+it('throws if `throws` is set to `true`', function () {
+    Http::fake(fn () => Http::response(status: Status::UNAUTHORIZED));
+    ThrowingRequest::build()->send();
+})->throws(RequestException::class);
