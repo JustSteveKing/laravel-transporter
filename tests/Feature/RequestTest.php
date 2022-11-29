@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Artisan;
 use JustSteveKing\StatusCode\Http;
@@ -353,7 +354,7 @@ it('can set a base uri using lockOn alias', function () {
     );
 
     expect(
-       $request->getBaseUrl()
+        $request->getBaseUrl()
     )->toEqual('https://example.com');
 });
 
@@ -461,4 +462,21 @@ it('applies withRequest and pending request calls concurrently', function () {
             $request->hasHeader('Authorization', 'Bearer foobar') &&
             $request->hasHeader('X-Test', '2');
     });
+});
+
+it('remembers a response', function () {
+    TestRequest::fake()->withFakeData([
+        'foo' => 'bar'
+    ])->remember(
+        ttl: now()->addMinute(),
+        cacheKey: 'test-request'
+    );
+
+    expect(cache()->get('test-request')->json())->toBe([
+        'foo' => 'bar'
+    ]);
+
+    Carbon::setTestNow(now()->addMinutes(2));
+
+    expect(cache()->has('test-request'))->toBeFalse();
 });

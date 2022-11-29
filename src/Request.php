@@ -8,6 +8,7 @@ use Illuminate\Http\Client\Pool;
 use JustSteveKing\StatusCode\Http;
 use OutOfBoundsException;
 use BadMethodCallException;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Str;
 use Illuminate\Support\Stringable;
 use Illuminate\Http\Client\Response;
@@ -39,6 +40,7 @@ abstract class Request
     protected array $data = [];
     protected array $fakeData = [];
     protected int $status;
+    protected null|string $cacheKey = null;
 
     /**
      * @param array $args
@@ -237,6 +239,24 @@ abstract class Request
     }
 
     /**
+     * @param CarbonInterface $ttl
+     * @return Response
+     */
+    public function remember(CarbonInterface $ttl, string $cacheKey = null): Response
+    {
+        $cacheKey ??= $this->cacheKey ?? Str::of(static::class)
+            ->classBasename()
+            ->append($this->path)
+            ->kebab();
+
+        return cache()->remember(
+            key: $cacheKey,
+            ttl: $ttl,
+            callback: fn () => $this->send(),
+        );
+    }
+
+    /**
      * @return string
      */
     public function getUrl(): string
@@ -246,7 +266,7 @@ abstract class Request
                                !empty($this->query),
                                fn (Stringable $path): Stringable => $path->append('?', http_build_query($this->query))
                            );
-        if(Str::of($this->method)->upper()->contains('GET','HEAD')){
+        if (Str::of($this->method)->upper()->contains('GET', 'HEAD')) {
             return $this->path();
         }
         return $url;
