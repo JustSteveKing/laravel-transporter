@@ -246,7 +246,10 @@ abstract class Request
     {
         $cacheKey ??= $this->cacheKey ?? Str::of(static::class)
             ->classBasename()
+            ->kebab()
             ->append($this->path)
+            ->kebab()
+            ->when($this->query)->append(':' . http_build_query($this->query))
             ->kebab();
 
         return cache()->remember(
