@@ -17,6 +17,7 @@
     failOnEmptyTestSuite="true"
     beStrictAboutOutputDuringTests="true"
     verbose="true"
+    cacheResult="false"
 >
     <testsuites>
         <testsuite name="Transporter Test Suite">

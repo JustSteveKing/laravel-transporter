@@ -11,33 +11,27 @@
     "authors": [
         {
             "role": "Developer",
-            "name": "Zuzana Kunckova",
-            "email": "contact@zuzana-k.com",
-            "homepage": "https://www.zuzana-k.com/"
-        },
-        {
-            "role": "Developer",
             "name": "Steve McDougall",
             "email": "juststevemcd@gmail.com",
             "homepage": "https://www.juststeveking.uk/"
         }
     ],
     "require": {
-        "php": "^8.0",
+        "php": "^8.2",
         "illuminate/contracts": "^8.37|^9.0",
         "juststeveking/http-status-code": "^2.0",
         "juststeveking/uri-builder": "^1.1",
-        "spatie/laravel-package-tools": "^1.4.3"
+        "spatie/laravel-package-tools": "^1.12.1"
     },
     "require-dev": {
-        "brianium/paratest": "^6.2",
-        "guzzlehttp/guzzle": "^7.3",
-        "nunomaduro/collision": "^5.3",
-        "orchestra/testbench": "^6.15",
-        "pestphp/pest": "^1.20",
-        "phpstan/phpstan": "^1.1",
-        "phpunit/phpunit": "^9.3",
-        "spatie/laravel-ray": "^1.9"
+        "brianium/paratest": "^6.8.1",
+        "guzzlehttp/guzzle": "^7.5",
+        "nunomaduro/collision": "^5.11",
+        "orchestra/testbench": "^6.25.1",
+        "pestphp/pest": "^1.22.4",
+        "phpstan/phpstan": "^1.9.14",
+        "phpunit/phpunit": "^9.6.3",
+        "spatie/laravel-ray": "^1.32.1"
     },
     "autoload": {
         "psr-4": {
