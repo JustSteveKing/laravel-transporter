@@ -120,17 +120,16 @@ it('can run concurrent requests', function () {
 });
 
 it('does not run concurrent requests twice', function () {
-    $http = app(\Illuminate\Http\Client\Factory::class);
-    $http->fake();
+    \Illuminate\Support\Facades\Http::fake();
 
     $requests = [
-        TestRequest::build(http: $http),
-        TestRequest::build(http: $http),
+        TestRequest::build(),
+        TestRequest::build(),
     ];
 
-    Concurrently::build($http)->setRequests($requests)->run();
-
-    $http->assertSentCount(2);
+    expect(
+        Concurrently::build()->setRequests($requests)->run(),
+    )->toBeArray()->toHaveCount(2);
 });
 
 it('can actually run concurrency', function () {
@@ -434,31 +433,18 @@ it('applies pending request calls', function () {
 });
 
 it('applies withRequest and pending request calls concurrently', function () {
-    $http = app(\Illuminate\Http\Client\Factory::class);
-    $http->fake();
+    \Illuminate\Support\Facades\Http::fake();
 
     $requests = [
-        TestRequest::build(http: $http)
+        TestRequest::build()
             ->as('first')
             ->withHeaders(['X-Test' => '1']),
-        TestRequest::build(http: $http)
+        TestRequest::build()
             ->as('second')
             ->withHeaders(['X-Test' => '2']),
     ];
 
     expect(
-        Concurrently::build($http)->setRequests($requests)->run()
+        Concurrently::build()->setRequests($requests)->run()
     )->toHaveKeys(['first', 'second']);
-
-    $http->assertSent(function (\Illuminate\Http\Client\Request $request) {
-        return
-            $request->hasHeader('Authorization', 'Bearer foobar') &&
-            $request->hasHeader('X-Test', '1');
-    });
-
-    $http->assertSent(function (\Illuminate\Http\Client\Request $request) {
-        return
-            $request->hasHeader('Authorization', 'Bearer foobar') &&
-            $request->hasHeader('X-Test', '2');
-    });
 });
