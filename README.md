@@ -1,7 +1,7 @@
 # Transporter
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/juststeveking/laravel-transporter.svg?style=flat-square)](https://packagist.org/packages/juststeveking/laravel-transporter)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/JustSteveKing/laravel-transporter/run-tests.yml?branch=main&label=Tests&style=flat-square)](https://github.com/JustSteveKing/transporter/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/JustSteveKing/laravel-transporter/run-tests.yml?branch=main&label=Tests&style=flat-square)](https://github.com/JustSteveKing/laravel-transporter/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/juststeveking/laravel-transporter.svg?style=flat-square)](https://packagist.org/packages/juststeveking/laravel-transporter)
 
 Transporter is a futuristic way to send API requests in PHP. This is an OOP approach to handle API requests.
