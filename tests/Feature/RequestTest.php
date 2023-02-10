@@ -128,7 +128,7 @@ it('does not run concurrent requests twice', function () {
         TestRequest::build(http: $http),
     ];
 
-    Concurrently::build(http: $http)->setRequests($requests)->run();
+    Concurrently::build($http)->setRequests($requests)->run();
 
     $http->assertSentCount(2);
 });
@@ -447,7 +447,7 @@ it('applies withRequest and pending request calls concurrently', function () {
     ];
 
     expect(
-        Concurrently::build(http: $http)->setRequests($requests)->run()
+        Concurrently::build($http)->setRequests($requests)->run()
     )->toHaveKeys(['first', 'second']);
 
     $http->assertSent(function (\Illuminate\Http\Client\Request $request) {
