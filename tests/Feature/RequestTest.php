@@ -3,10 +3,11 @@
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Artisan;
 use JustSteveKing\StatusCode\Http;
-use JustSteveKing\Transporter\Facades\Concurrently;
 use JustSteveKing\Transporter\Commands\TransporterCommand;
+use JustSteveKing\Transporter\Facades\Concurrently;
 use JustSteveKing\Transporter\Tests\Stubs\BaseUriRequest;
 use JustSteveKing\Transporter\Tests\Stubs\PostRequest;
+use JustSteveKing\Transporter\Tests\Stubs\PostXMLRequest;
 use JustSteveKing\Transporter\Tests\Stubs\TestRequest;
 
 it('can create a pending request', function () {
@@ -236,8 +237,8 @@ it('can add query parameters', function () {
         path: '/comments',
     )->withQuery(
         query: [
-                   'postId' => 1,
-               ],
+            'postId' => 1,
+        ],
     )->withFakeData([
         [
             'postId' => 1,
@@ -352,7 +353,7 @@ it('can set a base uri using lockOn alias', function () {
     );
 
     expect(
-       $request->getBaseUrl()
+        $request->getBaseUrl()
     )->toEqual('https://example.com');
 });
 
@@ -372,20 +373,20 @@ it('can add query parameters recursively without overwriting', function () {
     $query = TestRequest::fake()
         ->withQuery(
             query: [
-                       'postId' => 1,
-                   ],
+                'postId' => 1,
+            ],
         )->withQuery(
             query: [
-                        'page' => [
-                            'number' => 2,
-                        ],
-                    ],
+                'page' => [
+                    'number' => 2,
+                ],
+            ],
         )->withQuery(
             query: [
-                        'page' => [
-                            'size' => 30,
-                        ],
-                    ],
+                'page' => [
+                    'size' => 30,
+                ],
+            ],
         )->getQuery();
 
     expect(
@@ -427,7 +428,7 @@ it('applies pending request calls', function () {
         ->withHeaders(['X-Test' => 'test'])
         ->send();
 
-    $http->assertSent(function (\Illuminate\Http\Client\Request $request) {
+    $http->assertSent(function (Illuminate\Http\Client\Request $request) {
         return $request->hasHeader('X-Test', 'test');
     });
 });
@@ -447,4 +448,18 @@ it('applies withRequest and pending request calls concurrently', function () {
     expect(
         Concurrently::build()->setRequests($requests)->run()
     )->toHaveKeys(['first', 'second']);
+});
+
+it('can send an XML request', function () {
+    $xml = <<<'XML'
+        <Request>
+            <Login>login</Login>
+            <Password>password</Password>
+        </Request>
+    XML;
+
+    $response = PostXMLRequest::fake()
+        ->withXml($xml)
+        ->send();
+    expect($response->successful())->toBeTrue();
 });
