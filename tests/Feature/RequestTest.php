@@ -462,6 +462,5 @@ it('can send an XML request', function () {
         ->withFakeXml($xml)
         ->send();
 
-    ray($response);
     expect($response->successful())->toBeTrue();
 });
