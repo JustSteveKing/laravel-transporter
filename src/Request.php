@@ -300,7 +300,7 @@ abstract class Request
     /**
      * @param Pool|null $pool
      */
-    private function ensureRequest(null|Pool $pool = null): void
+    protected function ensureRequest(Pool $pool = null): void
     {
         if (! isset($this->request)) {
             if ($pool === null) {
