@@ -242,11 +242,12 @@ abstract class Request
     public function getUrl(): string
     {
         $url = (string) Str::of($this->path())
-                           ->when(
-                               !empty($this->query),
-                               fn (Stringable $path): Stringable => $path->append('?', http_build_query($this->query))
-                           );
-        if(Str::of($this->method)->upper()->contains('GET','HEAD')){
+            ->when(
+                ! empty($this->query),
+                fn (Stringable $path): Stringable => $path->append('?', http_build_query($this->query))
+            );
+
+        if (Str::of($this->method)->upper()->contains('HEAD')) {
             return $this->path();
         }
         return $url;

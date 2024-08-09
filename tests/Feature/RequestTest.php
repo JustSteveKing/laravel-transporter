@@ -233,7 +233,7 @@ it('can actually run concurrency', function () {
 });
 
 it('can add query parameters', function () {
-    $response = TestRequest::fake()->setPath(
+    $request = TestRequest::fake()->setPath(
         path: '/comments',
     )->withQuery(
         query: [
@@ -261,7 +261,9 @@ it('can add query parameters', function () {
             'email' => 'Nikita@garfield.biz',
             'body' => "quia molestiae reprehenderit quasi aspernatur\naut expedita occaecati aliquam eveniet laudantium\nomnis quibusdam delectus saepe quia accusamus maiores nam est\ncum et ducimus et vero voluptates excepturi deleniti ratione",
         ],
-    ])->send();
+    ]);
+
+    $response = $request->send();
 
     expect(
         $response->json()
@@ -270,6 +272,8 @@ it('can add query parameters', function () {
     foreach ($response->json() as $item) {
         expect($item['postId'])->toBe(1);
     }
+
+    expect($request->getUrl())->toBe('/comments?postId=1');
 });
 
 it('can add data to the request', function () {
@@ -370,7 +374,7 @@ it('can set the response status on fake requests', function () {
 });
 
 it('can add query parameters recursively without overwriting', function () {
-    $query = TestRequest::fake()
+    $request = TestRequest::fake()
         ->withQuery(
             query: [
                 'postId' => 1,
@@ -387,7 +391,9 @@ it('can add query parameters recursively without overwriting', function () {
                     'size' => 30,
                 ],
             ],
-        )->getQuery();
+        );
+
+    $query = $request->getQuery();
 
     expect(
         $query
@@ -404,6 +410,8 @@ it('can add query parameters recursively without overwriting', function () {
     expect(
         $query['page']['size']
     )->toBe(30);
+
+    expect($request->getUrl())->toBe('/todos?postId=1&page%5Bnumber%5D=2&page%5Bsize%5D=30');
 });
 
 it('can get the request payload', function () {
