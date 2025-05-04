@@ -18,7 +18,7 @@
     ],
     "require": {
         "php": "^8.1",
-        "illuminate/contracts": "^10.0|^11.0",
+        "illuminate/contracts": "^10.0|^11.0|^12.0",
         "juststeveking/http-status-code": "^2.0",
         "juststeveking/uri-builder": "^2.0|^3.0",
         "spatie/laravel-package-tools": "^1.14.1"
@@ -27,10 +27,10 @@
         "brianium/paratest": "^6.9|^7.4",
         "guzzlehttp/guzzle": "^7.5",
         "nunomaduro/collision": "^6.4|^8.0",
-        "orchestra/testbench": "^8.0|^9.0",
-        "pestphp/pest": "^1.22.4|^2.34",
-        "phpstan/phpstan": "^1.9.17",
-        "phpunit/phpunit": "^9.6.3|^10.5",
+        "orchestra/testbench": "^8.0|^9.0|^10.0",
+        "pestphp/pest": "^1.22.4|^2.34|^3.7",
+        "phpstan/phpstan": "^1.9.17|^2.1",
+        "phpunit/phpunit": "^9.6.3|^10.5|^11.5.3",
         "spatie/laravel-ray": "^1.32.2"
     },
     "autoload": {
