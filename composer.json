@@ -12,12 +12,12 @@
         {
             "role": "Developer",
             "name": "Steve McDougall",
-            "email": "juststevemcd@gmail.com",
-            "homepage": "https://www.juststeveking.uk/"
+            "email": "steve@juststeveking.com",
+            "homepage": "https://juststeveking.link"
         }
     ],
     "require": {
-        "php": "^8.1",
+        "php": "^8.3",
         "illuminate/contracts": "^10.0|^11.0|^12.0|^13.0",
         "juststeveking/http-status-code": "^2.0",
         "juststeveking/uri-builder": "^2.0|^3.0",
